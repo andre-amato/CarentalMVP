@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'; // Add this import
 import { DateRange } from '../../shared/domain/DateRange';
 import { DrivingLicense } from './DrivingLicense';
 
@@ -15,14 +16,10 @@ export class User {
   readonly drivingLicense: DrivingLicense;
 
   constructor(props: UserProps) {
-    this.id = props.id || this.generateId();
+    this.id = props.id || new ObjectId().toHexString();
     this.name = props.name;
     this.email = props.email;
     this.drivingLicense = props.drivingLicense;
-  }
-
-  private generateId(): string {
-    return Math.random().toString(36).substring(2, 9);
   }
 
   getId(): string {

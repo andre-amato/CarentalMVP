@@ -24,6 +24,9 @@ RUN npm run build || echo "Shared package build failed but continuing"
 
 # Go back to backend directory
 WORKDIR /app/packages/backend
+RUN npm run build
+
+
 
 # Expose port
 EXPOSE 3000

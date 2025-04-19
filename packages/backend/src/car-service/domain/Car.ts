@@ -1,5 +1,6 @@
 import { DateRange } from '../../shared/domain/DateRange';
 import { Season, SeasonDeterminer } from '../../shared/domain/Season';
+import { ObjectId } from 'mongodb'; // Add this import
 
 export interface CarProps {
   id?: string;
@@ -21,17 +22,13 @@ export class Car {
   readonly offSeasonPrice: number;
 
   constructor(props: CarProps) {
-    this.id = props.id || this.generateId();
+    this.id = props.id || new ObjectId().toHexString();
     this.brand = props.brand;
     this.model = props.model;
     this.stock = props.stock;
     this.peakSeasonPrice = props.peakSeasonPrice;
     this.midSeasonPrice = props.midSeasonPrice;
     this.offSeasonPrice = props.offSeasonPrice;
-  }
-
-  private generateId(): string {
-    return Math.random().toString(36).substring(2, 9);
   }
 
   getId(): string {

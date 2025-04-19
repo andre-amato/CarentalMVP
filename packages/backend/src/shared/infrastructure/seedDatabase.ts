@@ -62,7 +62,7 @@ export async function seedDatabase(db: Db): Promise<void> {
   const carEntities = carData.map((data) => new Car(data));
   for (const car of carEntities) {
     await db.collection('cars').insertOne({
-      _id: new ObjectId(car.getId()),
+      _id: new ObjectId(),
       brand: car.brand,
       model: car.model,
       stock: car.getStock(),
