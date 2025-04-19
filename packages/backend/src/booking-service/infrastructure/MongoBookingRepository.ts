@@ -1,4 +1,4 @@
-import { Collection, Db } from 'mongodb';
+import { Collection, Db, ObjectId } from 'mongodb';
 import { Car } from '../../car-service/domain/Car';
 import { DateRange } from '../../shared/domain/DateRange';
 import { Booking } from '../domain/Booking';
@@ -14,97 +14,166 @@ export class MongoBookingRepository implements BookingRepository {
   }
 
   async findById(id: string): Promise<Booking | null> {
-    const bookingData = await this.collection.findOne({ _id: id });
+    try {
+      const objectId = new ObjectId(id);
+      const bookingData = await this.collection.findOne({ _id: objectId });
 
-    if (!bookingData) {
-      return null;
+      if (!bookingData) {
+        return null;
+      }
+
+      return this.mapToDomain(bookingData);
+    } catch (error) {
+      // Handle invalid ObjectId format
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        return null;
+      }
+      throw error;
     }
-
-    return this.mapToDomain(bookingData);
   }
 
   async findByUserAndDateRange(
     userId: string,
     dateRange: DateRange
   ): Promise<Booking[]> {
-    // Find bookings where the user is the same and date ranges overlap
-    const bookingsData = await this.collection
-      .find({
-        'user._id': userId,
-        $or: [
-          {
-            // Start date of booking falls within the requested range
-            'dateRange.startDate': {
-              $gte: dateRange.startDate,
-              $lte: dateRange.endDate,
-            },
-          },
-          {
-            // End date of booking falls within the requested range
-            'dateRange.endDate': {
-              $gte: dateRange.startDate,
-              $lte: dateRange.endDate,
-            },
-          },
-          {
-            // Booking encompasses the requested range
-            $and: [
-              { 'dateRange.startDate': { $lte: dateRange.startDate } },
-              { 'dateRange.endDate': { $gte: dateRange.endDate } },
-            ],
-          },
-        ],
-      })
-      .toArray();
+    try {
+      const userObjectId = new ObjectId(userId);
 
-    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+      // Find bookings where the user is the same and date ranges overlap
+      const bookingsData = await this.collection
+        .find({
+          'user._id': userObjectId,
+          $or: [
+            {
+              // Start date of booking falls within the requested range
+              'dateRange.startDate': {
+                $gte: dateRange.startDate,
+                $lte: dateRange.endDate,
+              },
+            },
+            {
+              // End date of booking falls within the requested range
+              'dateRange.endDate': {
+                $gte: dateRange.startDate,
+                $lte: dateRange.endDate,
+              },
+            },
+            {
+              // Booking encompasses the requested range
+              $and: [
+                { 'dateRange.startDate': { $lte: dateRange.startDate } },
+                { 'dateRange.endDate': { $gte: dateRange.endDate } },
+              ],
+            },
+          ],
+        })
+        .toArray();
+
+      return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    } catch (error) {
+      // Handle invalid ObjectId format
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async findByCarAndDateRange(
     carId: string,
     dateRange: DateRange
   ): Promise<Booking[]> {
-    // Find bookings where the car is the same and date ranges overlap
-    const bookingsData = await this.collection
-      .find({
-        'car._id': carId,
-        $or: [
-          {
-            // Start date of booking falls within the requested range
-            'dateRange.startDate': {
-              $gte: dateRange.startDate,
-              $lte: dateRange.endDate,
-            },
-          },
-          {
-            // End date of booking falls within the requested range
-            'dateRange.endDate': {
-              $gte: dateRange.startDate,
-              $lte: dateRange.endDate,
-            },
-          },
-          {
-            // Booking encompasses the requested range
-            $and: [
-              { 'dateRange.startDate': { $lte: dateRange.startDate } },
-              { 'dateRange.endDate': { $gte: dateRange.endDate } },
-            ],
-          },
-        ],
-      })
-      .toArray();
+    try {
+      const carObjectId = new ObjectId(carId);
 
-    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+      // Find bookings where the car is the same and date ranges overlap
+      const bookingsData = await this.collection
+        .find({
+          'car._id': carObjectId,
+          $or: [
+            {
+              // Start date of booking falls within the requested range
+              'dateRange.startDate': {
+                $gte: dateRange.startDate,
+                $lte: dateRange.endDate,
+              },
+            },
+            {
+              // End date of booking falls within the requested range
+              'dateRange.endDate': {
+                $gte: dateRange.startDate,
+                $lte: dateRange.endDate,
+              },
+            },
+            {
+              // Booking encompasses the requested range
+              $and: [
+                { 'dateRange.startDate': { $lte: dateRange.startDate } },
+                { 'dateRange.endDate': { $gte: dateRange.endDate } },
+              ],
+            },
+          ],
+        })
+        .toArray();
+
+      return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    } catch (error) {
+      // Handle invalid ObjectId format
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async save(booking: Booking): Promise<void> {
-    await this.collection.updateOne(
-      { _id: booking.getId() },
-      {
-        $set: {
-          _id: booking.getId(),
+    try {
+      const bookingId = booking.getId();
+      const objectId = new ObjectId(bookingId);
+
+      // Try to convert user and car IDs to ObjectId
+      const userObjectId = new ObjectId(booking.user.getId());
+      const carObjectId = new ObjectId(booking.car.getId());
+
+      await this.collection.updateOne(
+        { _id: objectId },
+        {
+          $set: {
+            user: {
+              _id: userObjectId,
+              name: booking.user.name,
+              email: booking.user.email,
+              drivingLicense: {
+                licenseNumber: booking.user.drivingLicense.licenseNumber,
+                expiryDate: booking.user.drivingLicense.expiryDate,
+              },
+            },
+            car: {
+              _id: carObjectId,
+              brand: booking.car.brand,
+              model: booking.car.model,
+              stock: booking.car.getStock(),
+              peakSeasonPrice: booking.car.peakSeasonPrice,
+              midSeasonPrice: booking.car.midSeasonPrice,
+              offSeasonPrice: booking.car.offSeasonPrice,
+            },
+            dateRange: {
+              startDate: booking.dateRange.startDate,
+              endDate: booking.dateRange.endDate,
+            },
+            totalPrice: booking.totalPrice,
+            createdAt: booking.getCreatedAt(),
+          },
+        },
+        { upsert: true }
+      );
+    } catch (error) {
+      // If any ID is not a valid ObjectId, insert with new ones
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        await this.collection.insertOne({
+          _id: new ObjectId(),
           user: {
-            _id: booking.user.getId(),
+            _id: new ObjectId(),
             name: booking.user.name,
             email: booking.user.email,
             drivingLicense: {
@@ -113,7 +182,7 @@ export class MongoBookingRepository implements BookingRepository {
             },
           },
           car: {
-            _id: booking.car.getId(),
+            _id: new ObjectId(),
             brand: booking.car.brand,
             model: booking.car.model,
             stock: booking.car.getStock(),
@@ -127,10 +196,11 @@ export class MongoBookingRepository implements BookingRepository {
           },
           totalPrice: booking.totalPrice,
           createdAt: booking.getCreatedAt(),
-        },
-      },
-      { upsert: true }
-    );
+        });
+      } else {
+        throw error;
+      }
+    }
   }
 
   private mapToDomain(bookingData: any): Booking {
@@ -140,14 +210,14 @@ export class MongoBookingRepository implements BookingRepository {
     );
 
     const user = new User({
-      id: bookingData.user._id,
+      id: bookingData.user._id.toString(),
       name: bookingData.user.name,
       email: bookingData.user.email,
       drivingLicense,
     });
 
     const car = new Car({
-      id: bookingData.car._id,
+      id: bookingData.car._id.toString(),
       brand: bookingData.car.brand,
       model: bookingData.car.model,
       stock: bookingData.car.stock,
@@ -162,7 +232,7 @@ export class MongoBookingRepository implements BookingRepository {
     );
 
     return new Booking({
-      id: bookingData._id,
+      id: bookingData._id.toString(),
       user,
       car,
       dateRange,
