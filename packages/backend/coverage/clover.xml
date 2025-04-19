@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1745071430333" clover="3.2.0">
-  <project timestamp="1745071430333" name="All files">
-    <metrics statements="287" coveredstatements="158" conditionals="99" coveredconditionals="56" methods="83" coveredmethods="40" elements="469" coveredelements="254" complexity="0" loc="287" ncloc="287" packages="9" files="18" classes="18"/>
+<coverage generated="1745086813020" clover="3.2.0">
+  <project timestamp="1745086813020" name="All files">
+    <metrics statements="284" coveredstatements="158" conditionals="95" coveredconditionals="56" methods="81" coveredmethods="38" elements="460" coveredelements="252" complexity="0" loc="284" ncloc="284" packages="9" files="18" classes="18"/>
     <package name="api">
       <metrics statements="42" coveredstatements="42" conditionals="23" coveredconditionals="21" methods="7" coveredmethods="7"/>
       <file name="BookingController.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/api/BookingController.ts">
@@ -90,7 +90,7 @@
       </file>
     </package>
     <package name="booking-service.domain">
-      <metrics statements="25" coveredstatements="23" conditionals="8" coveredconditionals="7" methods="12" coveredmethods="10"/>
+      <metrics statements="25" coveredstatements="23" conditionals="8" coveredconditionals="7" methods="11" coveredmethods="9"/>
       <file name="Booking.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/booking-service/domain/Booking.ts">
         <metrics statements="13" coveredstatements="13" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
         <line num="14" count="1" type="stmt"/>
@@ -115,19 +115,19 @@
         <line num="12" count="2" type="stmt"/>
       </file>
       <file name="User.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/booking-service/domain/User.ts">
-        <metrics statements="8" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="3"/>
-        <line num="11" count="2" type="stmt"/>
-        <line num="18" count="9" type="cond" truecount="2" falsecount="0"/>
-        <line num="19" count="9" type="stmt"/>
+        <metrics statements="8" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="2"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="19" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="20" count="9" type="stmt"/>
         <line num="21" count="9" type="stmt"/>
-        <line num="25" count="3" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="34" count="2" type="stmt"/>
+        <line num="22" count="9" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
       </file>
     </package>
     <package name="booking-service.infrastructure">
-      <metrics statements="84" coveredstatements="2" conditionals="30" coveredconditionals="0" methods="25" coveredmethods="1"/>
+      <metrics statements="81" coveredstatements="2" conditionals="26" coveredconditionals="0" methods="25" coveredmethods="1"/>
       <file name="InMemoryBookingRepository.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/booking-service/infrastructure/InMemoryBookingRepository.ts">
         <metrics statements="11" coveredstatements="2" conditionals="6" coveredconditionals="0" methods="9" coveredmethods="1"/>
         <line num="5" count="1" type="stmt"/>
@@ -200,29 +200,26 @@
         <line num="234" count="0" type="stmt"/>
       </file>
       <file name="MongoUserRepository.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/booking-service/infrastructure/MongoUserRepository.ts">
-        <metrics statements="22" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <metrics statements="19" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="1" count="0" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
+        <line num="14" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="18" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="18" count="0" type="stmt"/>
         <line num="19" count="0" type="stmt"/>
+        <line num="21" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="22" count="0" type="stmt"/>
-        <line num="25" count="0" type="cond" truecount="0" falsecount="3"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="31" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="32" count="0" type="stmt"/>
         <line num="34" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="52" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="53" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
         <line num="63" count="0" type="stmt"/>
-        <line num="69" count="0" type="stmt"/>
-        <line num="74" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
       </file>
     </package>
     <package name="car-service.application">
@@ -241,45 +238,45 @@
       </file>
     </package>
     <package name="car-service.domain">
-      <metrics statements="36" coveredstatements="35" conditionals="7" coveredconditionals="6" methods="9" coveredmethods="9"/>
+      <metrics statements="36" coveredstatements="35" conditionals="7" coveredconditionals="6" methods="8" coveredmethods="8"/>
       <file name="Car.ts" path="/Users/andreamatodeoliveira/Desktop/carental/packages/backend/src/car-service/domain/Car.ts">
-        <metrics statements="36" coveredstatements="35" conditionals="7" coveredconditionals="6" methods="9" coveredmethods="9"/>
+        <metrics statements="36" coveredstatements="35" conditionals="7" coveredconditionals="6" methods="8" coveredmethods="8"/>
         <line num="2" count="4" type="stmt"/>
-        <line num="14" count="4" type="stmt"/>
-        <line num="24" count="22" type="cond" truecount="2" falsecount="0"/>
-        <line num="25" count="22" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
+        <line num="15" count="4" type="stmt"/>
+        <line num="25" count="22" type="cond" truecount="2" falsecount="0"/>
         <line num="26" count="22" type="stmt"/>
         <line num="27" count="22" type="stmt"/>
         <line num="28" count="22" type="stmt"/>
         <line num="29" count="22" type="stmt"/>
         <line num="30" count="22" type="stmt"/>
-        <line num="34" count="16" type="stmt"/>
-        <line num="38" count="10" type="stmt"/>
-        <line num="42" count="3" type="stmt"/>
-        <line num="46" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="47" count="1" type="stmt"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="53" count="1" type="stmt"/>
+        <line num="31" count="22" type="stmt"/>
+        <line num="35" count="10" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+        <line num="43" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="57" count="5" type="stmt"/>
+        <line num="58" count="5" type="stmt"/>
+        <line num="59" count="5" type="stmt"/>
         <line num="60" count="5" type="stmt"/>
-        <line num="61" count="5" type="stmt"/>
         <line num="62" count="5" type="stmt"/>
-        <line num="63" count="5" type="stmt"/>
-        <line num="65" count="5" type="stmt"/>
+        <line num="63" count="21" type="stmt"/>
+        <line num="64" count="21" type="stmt"/>
+        <line num="65" count="21" type="stmt"/>
         <line num="66" count="21" type="stmt"/>
-        <line num="67" count="21" type="stmt"/>
-        <line num="68" count="21" type="stmt"/>
         <line num="69" count="21" type="stmt"/>
-        <line num="72" count="21" type="stmt"/>
-        <line num="73" count="21" type="stmt"/>
-        <line num="74" count="21" type="stmt"/>
-        <line num="77" count="5" type="stmt"/>
-        <line num="79" count="5" type="stmt"/>
-        <line num="86" count="21" type="cond" truecount="3" falsecount="1"/>
-        <line num="88" count="15" type="stmt"/>
-        <line num="90" count="3" type="stmt"/>
-        <line num="92" count="3" type="stmt"/>
-        <line num="94" count="0" type="stmt"/>
-        <line num="99" count="8" type="stmt"/>
+        <line num="70" count="21" type="stmt"/>
+        <line num="71" count="21" type="stmt"/>
+        <line num="74" count="5" type="stmt"/>
+        <line num="76" count="5" type="stmt"/>
+        <line num="83" count="21" type="cond" truecount="3" falsecount="1"/>
+        <line num="85" count="15" type="stmt"/>
+        <line num="87" count="3" type="stmt"/>
+        <line num="89" count="3" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="96" count="8" type="stmt"/>
       </file>
     </package>
     <package name="car-service.infrastructure">

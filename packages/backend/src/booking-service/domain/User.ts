@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb'; // Add this import
+import { ObjectId } from 'mongodb';
 import { DateRange } from '../../shared/domain/DateRange';
 import { DrivingLicense } from './DrivingLicense';
 
