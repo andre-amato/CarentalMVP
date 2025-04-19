@@ -11,27 +11,25 @@ export class MongoUserRepository implements UserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    try {
-      const objectId = new ObjectId(id);
-      const userData = await this.collection.findOne({ _id: objectId });
-
-      if (!userData) {
-        return null;
-      }
-
-      return this.mapToDomain(userData);
-    } catch (error) {
-      // Handle invalid ObjectId format
-      if (error instanceof Error && error.message.includes('ObjectId')) {
-        return null;
-      }
-      throw error;
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
+      return null;
     }
+
+    const objectId = new ObjectId(id);
+    const userData = await this.collection.findOne({ _id: objectId });
+
+    if (!userData) {
+      return null;
+    }
+
+    return this.mapToDomain(userData);
   }
 
   async save(user: User): Promise<void> {
-    try {
-      const objectId = new ObjectId(user.getId());
+    const id = user.getId();
+
+    if (/^[a-fA-F0-9]{24}$/.test(id)) {
+      const objectId = new ObjectId(id);
 
       await this.collection.updateOne(
         { _id: objectId },
@@ -47,21 +45,17 @@ export class MongoUserRepository implements UserRepository {
         },
         { upsert: true }
       );
-    } catch (error) {
-      // If the ID is not a valid ObjectId, insert with a new one
-      if (error instanceof Error && error.message.includes('ObjectId')) {
-        await this.collection.insertOne({
-          _id: new ObjectId(),
-          name: user.name,
-          email: user.email,
-          drivingLicense: {
-            licenseNumber: user.drivingLicense.licenseNumber,
-            expiryDate: user.drivingLicense.expiryDate,
-          },
-        });
-      } else {
-        throw error;
-      }
+    } else {
+      // Insert with a new ObjectId
+      await this.collection.insertOne({
+        _id: new ObjectId(),
+        name: user.name,
+        email: user.email,
+        drivingLicense: {
+          licenseNumber: user.drivingLicense.licenseNumber,
+          expiryDate: user.drivingLicense.expiryDate,
+        },
+      });
     }
   }
 
@@ -72,7 +66,7 @@ export class MongoUserRepository implements UserRepository {
     );
 
     return new User({
-      id: userData._id.toString(), // Convert ObjectId to string for domain entity
+      id: userData._id.toString(),
       name: userData.name,
       email: userData.email,
       drivingLicense,
