@@ -21,6 +21,6 @@ export class DateRange {
     const diffTime = Math.abs(
       this.endDate.getTime() - this.startDate.getTime()
     );
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 to include both start and end dates
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
   }
 }

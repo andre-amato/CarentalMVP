@@ -11,7 +11,7 @@ export async function seedDatabase(db: Db): Promise<void> {
     await db.collection('bookings').drop();
   } catch (error) {
     // Collections might not exist yet
-    console.log('No collections to drop or error dropping collections');
+    console.log('No collections to drop yet or error dropping collections');
   }
 
   // Seed cars
