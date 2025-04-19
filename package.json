@@ -1,0 +1,13 @@
+{
+  "name": "carental",
+  "version": "1.0.0",
+  "description": "Car rental service MVP",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start:backend": "yarn workspace @carental/backend start",
+    "test:backend": "yarn workspace @carental/backend test"
+  }
+}
