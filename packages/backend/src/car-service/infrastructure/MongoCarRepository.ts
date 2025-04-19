@@ -1,0 +1,67 @@
+import { Collection, Db } from 'mongodb';
+import { DateRange } from '../../shared/domain/DateRange';
+import { Car } from '../domain/Car';
+import { CarRepository } from '../domain/CarRepository';
+
+export class MongoCarRepository implements CarRepository {
+  private collection: Collection;
+
+  constructor(db: Db) {
+    this.collection = db.collection('cars');
+  }
+
+  async findById(id: string): Promise<Car | null> {
+    const carData = await this.collection.findOne({ _id: id });
+
+    if (!carData) {
+      return null;
+    }
+
+    return this.mapToDomain(carData);
+  }
+
+  async findAll(): Promise<Car[]> {
+    const carsData = await this.collection.find().toArray();
+
+    return carsData.map((carData) => this.mapToDomain(carData));
+  }
+
+  async findAvailableCars(dateRange: DateRange): Promise<Car[]> {
+    // Find cars with stock > 0
+    const carsData = await this.collection
+      .find({ stock: { $gt: 0 } })
+      .toArray();
+
+    return carsData.map((carData) => this.mapToDomain(carData));
+  }
+
+  async save(car: Car): Promise<void> {
+    await this.collection.updateOne(
+      { _id: car.getId() },
+      {
+        $set: {
+          _id: car.getId(),
+          brand: car.brand,
+          model: car.model,
+          stock: car.getStock(),
+          peakSeasonPrice: car.peakSeasonPrice,
+          midSeasonPrice: car.midSeasonPrice,
+          offSeasonPrice: car.offSeasonPrice,
+        },
+      },
+      { upsert: true }
+    );
+  }
+
+  private mapToDomain(carData: any): Car {
+    return new Car({
+      id: carData._id,
+      brand: carData.brand,
+      model: carData.model,
+      stock: carData.stock,
+      peakSeasonPrice: carData.peakSeasonPrice,
+      midSeasonPrice: carData.midSeasonPrice,
+      offSeasonPrice: carData.offSeasonPrice,
+    });
+  }
+}

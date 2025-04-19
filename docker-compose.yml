@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=carental
+    networks:
+      - carental-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./packages/backend/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - DB_NAME=carental
+      - PORT=3000
+      - NODE_ENV=development
+      - SEED_DB=true
+    depends_on:
+      - mongo
+    networks:
+      - carental-network
+
+networks:
+  carental-network:
+    driver: bridge
+
+volumes:
+  mongo-data:

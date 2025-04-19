@@ -16,9 +16,9 @@ export class Car {
   readonly brand: string;
   readonly model: string;
   private stock: number;
-  private readonly peakSeasonPrice: number;
-  private readonly midSeasonPrice: number;
-  private readonly offSeasonPrice: number;
+  readonly peakSeasonPrice: number;
+  readonly midSeasonPrice: number;
+  readonly offSeasonPrice: number;
 
   constructor(props: CarProps) {
     this.id = props.id || this.generateId();

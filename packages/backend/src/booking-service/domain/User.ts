@@ -1,5 +1,5 @@
-import { DrivingLicense } from './DrivingLicense';
 import { DateRange } from '../../shared/domain/DateRange';
+import { DrivingLicense } from './DrivingLicense';
 
 export interface UserProps {
   id?: string;
