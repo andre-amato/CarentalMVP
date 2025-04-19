@@ -1,5 +1,5 @@
 {
-  "name": "@carental/shared",
+  "name": "@carental/backend/shared",
   "version": "1.0.0",
   "description": "Shared types and interfaces for Carental",
   "main": "dist/index.js",

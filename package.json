@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Car rental service MVP",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "build": "npm run build --workspaces",
     "start:backend": "npm run start --workspace=@carental/backend",
-    "test:backend": "npm run test --workspace=@carental/backend",
-    "dev:backend": "npm run dev --workspace=@carental/backend"
+    "dev:backend": "npm run dev --workspace=@carental/backend",
+    "test:backend": "npm run test --workspace=@carental/backend"
   }
 }
