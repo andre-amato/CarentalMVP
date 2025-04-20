@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CreateBookingUseCase } from '../CreateBookingUseCase';
-import { UserRepository } from '../../domain/UserRepository';
+import { UserRepository } from '../../../user-service/domain/UserRepository';
 import { CarRepository } from '../../../car-service/domain/CarRepository';
 import { BookingRepository } from '../../domain/BookingRepository';
-import { User } from '../../domain/User';
+import { User } from '../../../user-service/domain/User';
 import { Car } from '../../../car-service/domain/Car';
 import { DateRange } from '../../../shared/domain/DateRange';
-import { DrivingLicense } from '../../domain/DrivingLicense';
+import { DrivingLicense } from '../../../user-service/domain/DrivingLicense';
 import { Booking } from '../../domain/Booking';
 import { CreateBookingDTO } from '../../../shared/types';
 
@@ -37,8 +37,9 @@ describe('CreateBookingUseCase', () => {
   let mockBookingRepository: jest.Mocked<BookingRepository>;
   let createBookingUseCase: CreateBookingUseCase;
 
-  const userId = 'user123';
-  const carId = 'car123';
+  // Use valid MongoDB ObjectId format
+  const userId = '507f1f77bcf86cd799439011';
+  const carId = '507f1f77bcf86cd799439012';
   const startDate = '2023-01-01';
   const endDate = '2023-01-05';
   let mockUser: User;
@@ -102,6 +103,8 @@ describe('CreateBookingUseCase', () => {
     mockUserRepository.findById.mockResolvedValue(mockUser);
     mockCarRepository.findById.mockResolvedValue(mockCar);
     mockBookingRepository.findByUserAndDateRange.mockResolvedValue([]);
+    // Add this mock for the new implementation
+    mockBookingRepository.findByCarAndDateRange.mockResolvedValue([]);
 
     // Mock car methods
     jest.spyOn(mockCar, 'calculatePriceForDateRange').mockReturnValue({
@@ -109,6 +112,7 @@ describe('CreateBookingUseCase', () => {
       averageDailyPrice: 80,
     });
     jest.spyOn(mockCar, 'isAvailable').mockReturnValue(true);
+    // These are no longer needed, but we'll keep them for backward compatibility
     jest.spyOn(mockCar, 'decrementStock').mockImplementation(() => {});
 
     // Mock user methods
@@ -123,15 +127,22 @@ describe('CreateBookingUseCase', () => {
 
     expect(mockUserRepository.findById).toHaveBeenCalledWith(userId);
     expect(mockCarRepository.findById).toHaveBeenCalledWith(carId);
-    expect(mockCar.isAvailable).toHaveBeenCalled();
 
-    // We don't check the exact DateRange object, just verify method calls
+    // We're no longer checking car.isAvailable() in our new implementation
+    // expect(mockCar.isAvailable).toHaveBeenCalled();
+
+    // We check for car bookings in date range instead
+    expect(mockBookingRepository.findByCarAndDateRange).toHaveBeenCalled();
     expect(mockBookingRepository.findByUserAndDateRange).toHaveBeenCalled();
     expect(mockUser.canDriveFor).toHaveBeenCalled();
     expect(mockCar.calculatePriceForDateRange).toHaveBeenCalled();
-    expect(mockCar.decrementStock).toHaveBeenCalled();
 
-    expect(mockCarRepository.save).toHaveBeenCalledWith(mockCar);
+    // We no longer decrement stock
+    // expect(mockCar.decrementStock).toHaveBeenCalled();
+
+    // We no longer save car
+    // expect(mockCarRepository.save).toHaveBeenCalledWith(mockCar);
+
     expect(mockBookingRepository.save).toHaveBeenCalled();
 
     // Check that Booking constructor received expected objects
@@ -163,11 +174,14 @@ describe('CreateBookingUseCase', () => {
     expect(mockBookingRepository.save).not.toHaveBeenCalled();
   });
 
-  it('should throw error if car is not available', async () => {
-    jest.spyOn(mockCar, 'isAvailable').mockReturnValue(false);
+  it('should throw error if car is not available for the selected dates', async () => {
+    // Mock that there are already bookings equal to the car's stock
+    mockBookingRepository.findByCarAndDateRange.mockResolvedValue([
+      {},
+    ] as Booking[]);
 
     await expect(createBookingUseCase.execute(dto)).rejects.toThrow(
-      'Car is not available'
+      'Car is not available for the selected dates'
     );
     expect(mockBookingRepository.save).not.toHaveBeenCalled();
   });

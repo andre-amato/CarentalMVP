@@ -1,16 +1,42 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, jest, beforeEach } from '@jest/globals';
 import { Request, Response } from 'express';
 import { CreateBookingUseCase } from '../../booking-service/application/CreateBookingUseCase';
+import { DeleteBookingUseCase } from '../../booking-service/application/DeleteBookingUseCase';
+import { GetAllBookingsUseCase } from '../../booking-service/application/GetAllBookingsUseCase';
+import { GetBookingsByCarIdUseCase } from '../../booking-service/application/GetBookingsByCarIdUseCase';
+import { GetBookingsByUserIdUseCase } from '../../booking-service/application/GetBookingsByUserIdUseCase';
 import { BookingController } from '../BookingController';
 
 describe('BookingController', () => {
-  // Mock the CreateBookingUseCase
+  // Mock the use cases
   const mockCreateBookingUseCase = {
     execute: jest.fn(),
   } as unknown as jest.Mocked<CreateBookingUseCase>;
 
+  const mockDeleteBookingUseCase = {
+    execute: jest.fn(),
+  } as unknown as jest.Mocked<DeleteBookingUseCase>;
+
+  const mockGetAllBookingsUseCase = {
+    execute: jest.fn(),
+  } as unknown as jest.Mocked<GetAllBookingsUseCase>;
+
+  const mockGetBookingsByCarIdUseCase = {
+    execute: jest.fn(),
+  } as unknown as jest.Mocked<GetBookingsByCarIdUseCase>;
+
+  const mockGetBookingsByUserIdUseCase = {
+    execute: jest.fn(),
+  } as unknown as jest.Mocked<GetBookingsByUserIdUseCase>;
+
   // Create controller with mocked dependencies
-  const bookingController = new BookingController(mockCreateBookingUseCase);
+  const bookingController = new BookingController(
+    mockCreateBookingUseCase,
+    mockDeleteBookingUseCase,
+    mockGetAllBookingsUseCase,
+    mockGetBookingsByCarIdUseCase,
+    mockGetBookingsByUserIdUseCase
+  );
 
   // Mock Express request and response objects
   let mockRequest: Partial<Request>;
@@ -37,7 +63,7 @@ describe('BookingController', () => {
       // Test with missing userId
       mockRequest = {
         body: {
-          carId: 'car123',
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
           startDate: '2023-01-01',
           endDate: '2023-01-05',
         },
@@ -59,8 +85,8 @@ describe('BookingController', () => {
     it('should return 201 when booking is created successfully', async () => {
       mockRequest = {
         body: {
-          userId: 'user123',
-          carId: 'car123',
+          userId: '507f1f77bcf86cd799439011', // Valid ObjectId format
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
           startDate: '2023-01-01',
           endDate: '2023-01-05',
         },
@@ -75,8 +101,8 @@ describe('BookingController', () => {
       );
 
       expect(mockCreateBookingUseCase.execute).toHaveBeenCalledWith({
-        userId: 'user123',
-        carId: 'car123',
+        userId: '507f1f77bcf86cd799439011',
+        carId: '507f1f77bcf86cd799439012',
         startDate: '2023-01-01',
         endDate: '2023-01-05',
       });
@@ -92,8 +118,8 @@ describe('BookingController', () => {
     it('should return 404 when user or car not found', async () => {
       mockRequest = {
         body: {
-          userId: 'nonexistent',
-          carId: 'car123',
+          userId: '507f1f77bcf86cd799439011', // Valid ObjectId format
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
           startDate: '2023-01-01',
           endDate: '2023-01-05',
         },
@@ -117,8 +143,8 @@ describe('BookingController', () => {
     it('should return 400 for domain validation errors', async () => {
       mockRequest = {
         body: {
-          userId: 'user123',
-          carId: 'car123',
+          userId: '507f1f77bcf86cd799439011', // Valid ObjectId format
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
           startDate: '2023-01-01',
           endDate: '2023-01-05',
         },
@@ -139,11 +165,36 @@ describe('BookingController', () => {
       });
     });
 
+    it('should return 400 for invalid ID format', async () => {
+      mockRequest = {
+        body: {
+          userId: 'invalid-id',
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
+          startDate: '2023-01-01',
+          endDate: '2023-01-05',
+        },
+      };
+
+      mockCreateBookingUseCase.execute.mockRejectedValueOnce(
+        new Error('Invalid user ID format')
+      );
+
+      await bookingController.createBooking(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(statusSpy).toHaveBeenCalledWith(400);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'Invalid user ID format',
+      });
+    });
+
     it('should return 500 for unexpected errors', async () => {
       mockRequest = {
         body: {
-          userId: 'user123',
-          carId: 'car123',
+          userId: '507f1f77bcf86cd799439011', // Valid ObjectId format
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
           startDate: '2023-01-01',
           endDate: '2023-01-05',
         },
@@ -161,6 +212,218 @@ describe('BookingController', () => {
       expect(statusSpy).toHaveBeenCalledWith(500);
       expect(jsonSpy).toHaveBeenCalledWith({
         message: 'Unexpected error',
+      });
+    });
+  });
+
+  describe('getAllBookings', () => {
+    it('should return all bookings successfully', async () => {
+      const mockBookings = [
+        {
+          getId: () => 'booking1',
+          user: { getId: () => 'user1', name: 'User 1' },
+          car: { getId: () => 'car1', brand: 'Toyota', model: 'Yaris' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 100,
+          getCreatedAt: () => new Date(),
+        },
+        {
+          getId: () => 'booking2',
+          user: { getId: () => 'user2', name: 'User 2' },
+          car: { getId: () => 'car2', brand: 'Seat', model: 'Ibiza' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 200,
+          getCreatedAt: () => new Date(),
+        },
+      ];
+      mockGetAllBookingsUseCase.execute.mockResolvedValueOnce(
+        mockBookings as any
+      );
+
+      await bookingController.getAllBookings(
+        {} as Request,
+        mockResponse as Response
+      );
+
+      expect(mockGetAllBookingsUseCase.execute).toHaveBeenCalled();
+      expect(statusSpy).toHaveBeenCalledWith(200);
+      expect(jsonSpy).toHaveBeenCalledWith(expect.any(Array));
+    });
+  });
+
+  describe('getBookingsByCarId', () => {
+    it('should return 400 if car ID is missing', async () => {
+      mockRequest = {
+        params: {},
+      };
+
+      await bookingController.getBookingsByCarId(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(statusSpy).toHaveBeenCalledWith(400);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'Car ID is required',
+      });
+    });
+
+    it('should return bookings for a car ID', async () => {
+      mockRequest = {
+        params: {
+          carId: '507f1f77bcf86cd799439012', // Valid ObjectId format
+        },
+      };
+
+      const mockBookings = [
+        {
+          getId: () => 'booking1',
+          user: { getId: () => 'user1', name: 'User 1' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 100,
+          getCreatedAt: () => new Date(),
+        },
+        {
+          getId: () => 'booking2',
+          user: { getId: () => 'user2', name: 'User 2' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 200,
+          getCreatedAt: () => new Date(),
+        },
+      ];
+      mockGetBookingsByCarIdUseCase.execute.mockResolvedValueOnce(
+        mockBookings as any
+      );
+
+      await bookingController.getBookingsByCarId(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockGetBookingsByCarIdUseCase.execute).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439012'
+      );
+      expect(statusSpy).toHaveBeenCalledWith(200);
+      expect(jsonSpy).toHaveBeenCalledWith(expect.any(Array));
+    });
+  });
+
+  describe('getBookingsByUserId', () => {
+    it('should return 400 if user ID is missing', async () => {
+      mockRequest = {
+        params: {},
+      };
+
+      await bookingController.getBookingsByUserId(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(statusSpy).toHaveBeenCalledWith(400);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'User ID is required',
+      });
+    });
+
+    it('should return bookings for a user ID', async () => {
+      mockRequest = {
+        params: {
+          userId: '507f1f77bcf86cd799439011', // Valid ObjectId format
+        },
+      };
+
+      const mockBookings = [
+        {
+          getId: () => 'booking1',
+          car: { getId: () => 'car1', brand: 'Toyota', model: 'Yaris' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 100,
+          getCreatedAt: () => new Date(),
+        },
+        {
+          getId: () => 'booking2',
+          car: { getId: () => 'car2', brand: 'Seat', model: 'Ibiza' },
+          dateRange: { startDate: new Date(), endDate: new Date() },
+          totalPrice: 200,
+          getCreatedAt: () => new Date(),
+        },
+      ];
+      mockGetBookingsByUserIdUseCase.execute.mockResolvedValueOnce(
+        mockBookings as any
+      );
+
+      await bookingController.getBookingsByUserId(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockGetBookingsByUserIdUseCase.execute).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439011'
+      );
+      expect(statusSpy).toHaveBeenCalledWith(200);
+      expect(jsonSpy).toHaveBeenCalledWith(expect.any(Array));
+    });
+  });
+
+  describe('deleteBooking', () => {
+    it('should return 400 if booking ID is missing', async () => {
+      mockRequest = {
+        params: {},
+      };
+
+      await bookingController.deleteBooking(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(statusSpy).toHaveBeenCalledWith(400);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'Booking ID is required',
+      });
+    });
+
+    it('should delete a booking successfully', async () => {
+      mockRequest = {
+        params: {
+          id: '507f1f77bcf86cd799439013', // Valid ObjectId format
+        },
+      };
+
+      mockDeleteBookingUseCase.execute.mockResolvedValueOnce();
+
+      await bookingController.deleteBooking(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockDeleteBookingUseCase.execute).toHaveBeenCalledWith(
+        '507f1f77bcf86cd799439013'
+      );
+      expect(statusSpy).toHaveBeenCalledWith(200);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'Booking deleted successfully',
+      });
+    });
+
+    it('should return 404 if booking is not found', async () => {
+      mockRequest = {
+        params: {
+          id: '507f1f77bcf86cd799439013', // Valid ObjectId format
+        },
+      };
+
+      mockDeleteBookingUseCase.execute.mockRejectedValueOnce(
+        new Error('Booking not found')
+      );
+
+      await bookingController.deleteBooking(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(statusSpy).toHaveBeenCalledWith(404);
+      expect(jsonSpy).toHaveBeenCalledWith({
+        message: 'Booking not found',
       });
     });
   });

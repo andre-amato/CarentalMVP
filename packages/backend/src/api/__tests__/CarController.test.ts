@@ -1,41 +1,52 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 import { GetAvailableCarsUseCase } from '../../car-service/application/GetAvailableCarsUseCase';
-import { CarController } from '../CarController';
+import { GetCarByIdUseCase } from '../../car-service/application/GetCarByIdUseCase';
 import { AvailableCarDTO } from '../../shared/types';
+import { CarController } from '../CarController';
+import { GetAllCarsUseCase } from '../../car-service/application/GetAllCarsUseCase';
+
+// Mocks for other dependencies used by the CarController
+const mockGetAvailableCarsUseCase = {
+  execute: jest.fn(),
+} as unknown as jest.Mocked<GetAvailableCarsUseCase>;
+
+const mockGetAllCarsUseCase = {
+  execute: jest.fn(),
+  carRepository: {}, // Provide required dependency or dummy object
+} as unknown as jest.Mocked<GetAllCarsUseCase>;
+
+const mockGetCarByIdUseCase = {
+  execute: jest.fn(),
+  carRepository: {}, // if GetCarByIdUseCase requires it
+} as unknown as jest.Mocked<GetCarByIdUseCase>;
 
 describe('CarController', () => {
-  // Mock the GetAvailableCarsUseCase
-  const mockGetAvailableCarsUseCase = {
-    execute: jest.fn(),
-  } as unknown as jest.Mocked<GetAvailableCarsUseCase>;
+  const carController = new CarController(
+    mockGetAvailableCarsUseCase,
+    mockGetAllCarsUseCase,
+    mockGetCarByIdUseCase
+  );
 
-  // Create controller with mocked dependencies
-  const carController = new CarController(mockGetAvailableCarsUseCase);
-
-  // Mock Express request and response objects
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let jsonSpy: jest.Mock;
   let statusSpy: jest.Mock;
 
   beforeEach(() => {
-    // Reset mock function calls
     jest.clearAllMocks();
 
-    // Setup response mock - use proper type assertions
     jsonSpy = jest.fn().mockReturnThis();
     statusSpy = jest.fn().mockReturnValue({ json: jsonSpy });
 
     mockResponse = {
-      status: statusSpy as unknown as Response['status'],
-      json: jsonSpy as unknown as Response['json'],
+      status: statusSpy as Response['status'],
+      json: jsonSpy as Response['json'],
     };
   });
 
   describe('getAvailableCars', () => {
     it('should return 400 if dates are missing', async () => {
-      // Test with missing from date
       mockRequest = {
         query: {
           to: '2023-01-05',
@@ -54,8 +65,8 @@ describe('CarController', () => {
         })
       );
 
-      // Test with missing to date
       jest.clearAllMocks();
+
       mockRequest = {
         query: {
           from: '2023-01-01',
@@ -106,9 +117,10 @@ describe('CarController', () => {
 
       const availableCars: AvailableCarDTO[] = [
         {
-          id: 'car123',
+          id: '507f1f77bcf86cd799439011',
           brand: 'Toyota',
           model: 'Yaris',
+          stock: 2,
           averageDailyPrice: 50,
           totalPrice: 250,
         },

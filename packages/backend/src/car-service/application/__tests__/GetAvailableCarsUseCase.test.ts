@@ -29,7 +29,7 @@ describe('GetAvailableCarsUseCase', () => {
       new Car({
         brand: 'Seat',
         model: 'Ibiza',
-        stock: 0, // No stock, should not be returned
+        stock: 0, // No stock, but should still be returned now
         peakSeasonPrice: 85.12,
         midSeasonPrice: 65.73,
         offSeasonPrice: 46.85,
@@ -37,41 +37,61 @@ describe('GetAvailableCarsUseCase', () => {
     );
   });
 
-  it('should return available cars with correct pricing for peak season', async () => {
+  it('should return all cars with correct pricing for peak season', async () => {
     // Peak season dates
     const startDate = new Date('2023-07-01');
     const endDate = new Date('2023-07-05');
 
     const availableCars = await useCase.execute(startDate, endDate);
 
-    expect(availableCars.length).toBe(1);
-    expect(availableCars[0].brand).toBe('Toyota');
-    expect(availableCars[0].model).toBe('Yaris');
-    expect(availableCars[0].totalPrice).toBeCloseTo(98.43 * 5, 2); // 5 days at peak price
-    expect(availableCars[0].averageDailyPrice).toBeCloseTo(98.43, 2);
+    // Now we expect both cars to be returned
+    expect(availableCars.length).toBe(2);
+
+    const toyotaCar = availableCars.find((car) => car.model === 'Yaris');
+    const seatCar = availableCars.find((car) => car.model === 'Ibiza');
+
+    expect(toyotaCar).toBeDefined();
+    expect(toyotaCar!.brand).toBe('Toyota');
+    expect(toyotaCar!.stock).toBe(3); // Full stock
+    expect(toyotaCar!.totalPrice).toBeCloseTo(98.43 * 5, 2); // 5 days at peak price
+    expect(toyotaCar!.averageDailyPrice).toBeCloseTo(98.43, 2);
+
+    expect(seatCar).toBeDefined();
+    expect(seatCar!.brand).toBe('Seat');
+    expect(seatCar!.stock).toBe(0); // Zero stock
+    expect(seatCar!.totalPrice).toBeCloseTo(85.12 * 5, 2);
   });
 
-  it('should return available cars with correct pricing for off season', async () => {
+  it('should return all cars with correct pricing for off season', async () => {
     // Off season dates
     const startDate = new Date('2023-12-01');
     const endDate = new Date('2023-12-03');
 
     const availableCars = await useCase.execute(startDate, endDate);
 
-    expect(availableCars.length).toBe(1);
-    expect(availableCars[0].brand).toBe('Toyota');
-    expect(availableCars[0].model).toBe('Yaris');
-    expect(availableCars[0].totalPrice).toBeCloseTo(53.65 * 3, 2); // 3 days at off season price
-    expect(availableCars[0].averageDailyPrice).toBeCloseTo(53.65, 2);
+    // Now we expect both cars to be returned
+    expect(availableCars.length).toBe(2);
+
+    const toyotaCar = availableCars.find((car) => car.model === 'Yaris');
+    const seatCar = availableCars.find((car) => car.model === 'Ibiza');
+
+    expect(toyotaCar).toBeDefined();
+    expect(toyotaCar!.totalPrice).toBeCloseTo(53.65 * 3, 2); // 3 days at off season price
+    expect(toyotaCar!.averageDailyPrice).toBeCloseTo(53.65, 2);
+
+    expect(seatCar).toBeDefined();
+    expect(seatCar!.stock).toBe(0);
   });
 
-  it('should not return cars with no stock', async () => {
+  it('should include cars with no stock in results', async () => {
     const startDate = new Date('2023-07-01');
     const endDate = new Date('2023-07-05');
 
     const availableCars = await useCase.execute(startDate, endDate);
 
-    expect(availableCars.length).toBe(1);
-    expect(availableCars.find((car) => car.model === 'Ibiza')).toBeUndefined();
+    // Now we expect both cars to be returned
+    expect(availableCars.length).toBe(2);
+    expect(availableCars.find((car) => car.model === 'Ibiza')).toBeDefined();
+    expect(availableCars.find((car) => car.model === 'Ibiza')?.stock).toBe(0);
   });
 });

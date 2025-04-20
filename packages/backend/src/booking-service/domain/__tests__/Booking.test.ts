@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Car } from '../../../car-service/domain/Car';
 import { DateRange } from '../../../shared/domain/DateRange';
+import { DrivingLicense } from '../../../user-service/domain/DrivingLicense';
+import { User } from '../../../user-service/domain/User';
 import { Booking } from '../Booking';
-import { DrivingLicense } from '../DrivingLicense';
-import { User } from '../User';
 
 describe('Booking', () => {
   let validUser: User;
