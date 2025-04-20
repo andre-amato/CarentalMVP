@@ -1,10 +1,10 @@
 import { Collection, Db, ObjectId } from 'mongodb';
 import { Car } from '../../car-service/domain/Car';
 import { DateRange } from '../../shared/domain/DateRange';
+import { DrivingLicense } from '../../user-service/domain/DrivingLicense';
+import { User } from '../../user-service/domain/User';
 import { Booking } from '../domain/Booking';
 import { BookingRepository } from '../domain/BookingRepository';
-import { DrivingLicense } from '../domain/DrivingLicense';
-import { User } from '../domain/User';
 
 export class MongoBookingRepository implements BookingRepository {
   private collection: Collection;
@@ -239,5 +239,12 @@ export class MongoBookingRepository implements BookingRepository {
       totalPrice: bookingData.totalPrice,
       createdAt: new Date(bookingData.createdAt),
     });
+  }
+
+  async delete(id: string): Promise<void> {
+    if (!/^[a-fA-F0-9]{24}$/.test(id)) return;
+
+    const objectId = new ObjectId(id);
+    await this.collection.deleteOne({ _id: objectId });
   }
 }

@@ -1,6 +1,6 @@
 import { Car } from '../../car-service/domain/Car';
 import { DateRange } from '../../shared/domain/DateRange';
-import { User } from './User';
+import { User } from '../../user-service/domain/User';
 
 export interface BookingProps {
   id?: string;

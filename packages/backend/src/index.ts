@@ -2,22 +2,30 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+
 import { BookingController } from './api/BookingController';
 import { CarController } from './api/CarController';
+import { UserController } from './api/UserController';
 import { setupRoutes } from './api/routes';
+
 import { CreateBookingUseCase } from './booking-service/application/CreateBookingUseCase';
+import { DeleteBookingUseCase } from './booking-service/application/DeleteBookingUseCase';
 import { MongoBookingRepository } from './booking-service/infrastructure/MongoBookingRepository';
-import { MongoUserRepository } from './booking-service/infrastructure/MongoUserRepository';
+import { MongoUserRepository } from './user-service/infrastructure/MongoUserRepository';
+
 import { GetAvailableCarsUseCase } from './car-service/application/GetAvailableCarsUseCase';
 import { MongoCarRepository } from './car-service/infrastructure/MongoCarRepository';
+
+import { CreateUserUseCase } from './user-service/application/CreateUserUseCase';
+import { DeleteUserUseCase } from './user-service/application/DeleteUserUseCase';
+import { GetUserUseCase } from './user-service/application/GetUserUseCase';
+
 import { seedDatabase } from './shared/infrastructure/seedDatabase';
 
 async function bootstrap() {
-  // Set up Express app
   const app = express();
   app.use(express.json());
 
-  // MongoDB Connection
   const MONGO_URI = process.env.MONGO_URI || 'mongodb://mongo:27017';
   const DB_NAME = process.env.DB_NAME || 'carental';
 
@@ -27,33 +35,53 @@ async function bootstrap() {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-
     const db = client.db(DB_NAME);
 
-    // Set up repositories
+    // Repositories
     const carRepository = new MongoCarRepository(db);
     const bookingRepository = new MongoBookingRepository(db);
     const userRepository = new MongoUserRepository(db);
 
-    // Set up use cases
+    // Use Cases
     const getAvailableCarsUseCase = new GetAvailableCarsUseCase(
       carRepository,
       bookingRepository
     );
+
     const createBookingUseCase = new CreateBookingUseCase(
       bookingRepository,
       carRepository,
       userRepository
     );
 
-    // Set up controllers
+    const deleteBookingUseCase = new DeleteBookingUseCase(
+      bookingRepository,
+      carRepository
+    );
+
+    const createUserUseCase = new CreateUserUseCase(userRepository);
+    const getUserUseCase = new GetUserUseCase(userRepository);
+    const deleteUserUseCase = new DeleteUserUseCase(userRepository);
+
+    // Controllers
     const carController = new CarController(getAvailableCarsUseCase);
-    const bookingController = new BookingController(createBookingUseCase);
+    const bookingController = new BookingController(
+      createBookingUseCase,
+      deleteBookingUseCase
+    );
+    const userController = new UserController(
+      createUserUseCase,
+      getUserUseCase,
+      deleteUserUseCase
+    );
 
-    // Set up API routes
-    app.use('/api', setupRoutes(carController, bookingController));
+    // Routes
+    app.use(
+      '/api',
+      setupRoutes(carController, bookingController, userController)
+    );
 
-    // Set up Swagger documentation
+    // Swagger
     const swaggerOptions = {
       definition: {
         openapi: '3.0.0',
@@ -75,30 +103,26 @@ async function bootstrap() {
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    // Seed the database if needed
-    const shouldSeedDb = process.env.SEED_DB === 'true';
-    if (shouldSeedDb) {
+    // Optional DB seeding
+    if (process.env.SEED_DB === 'true') {
       await seedDatabase(db);
       console.log('Database seeded successfully');
     }
 
-    // Start the server
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(
-        `Swagger documentation available at http://localhost:${PORT}/api-docs`
-      );
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`📚 Swagger UI: http://localhost:${PORT}/api-docs`);
     });
   } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
+    console.error('❌ Failed to connect to MongoDB:', error);
     process.exit(1);
   }
 }
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (error) => {
-  console.error('Unhandled promise rejection:', error);
+  console.error('❗ Unhandled promise rejection:', error);
   process.exit(1);
 });
 

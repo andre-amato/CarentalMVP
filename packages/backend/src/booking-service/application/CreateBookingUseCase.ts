@@ -3,7 +3,7 @@ import { CarRepository } from '../../car-service/domain/CarRepository';
 import { DateRange } from '../../shared/domain/DateRange';
 import { Booking } from '../domain/Booking';
 import { BookingRepository } from '../domain/BookingRepository';
-import { UserRepository } from '../domain/UserRepository';
+import { UserRepository } from '../../user-service/domain/UserRepository';
 
 export class CreateBookingUseCase {
   constructor(

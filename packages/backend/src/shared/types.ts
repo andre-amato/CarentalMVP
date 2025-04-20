@@ -39,3 +39,21 @@ export interface CreateBookingDTO {
   startDate: string;
   endDate: string;
 }
+
+export interface DrivingLicenseDTO {
+  licenseNumber: string;
+  expiryDate: string;
+}
+
+export interface UserDTO {
+  id: string;
+  name: string;
+  email: string;
+  drivingLicense: DrivingLicenseDTO;
+}
+
+export interface CreateUserDTO {
+  name: string;
+  email: string;
+  drivingLicense: DrivingLicenseDTO;
+}

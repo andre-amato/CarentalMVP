@@ -9,8 +9,21 @@ export class InMemoryUserRepository implements UserRepository {
     return user || null;
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    for (const user of this.users.values()) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return null;
+  }
+
   async save(user: User): Promise<void> {
     this.users.set(user.getId(), user);
+  }
+
+  async delete(id: string): Promise<void> {
+    this.users.delete(id);
   }
 
   // Helper method for testing

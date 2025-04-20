@@ -1,6 +1,6 @@
 import { Db, ObjectId } from 'mongodb';
-import { DrivingLicense } from '../../booking-service/domain/DrivingLicense';
-import { User } from '../../booking-service/domain/User';
+import { DrivingLicense } from '../../user-service/domain/DrivingLicense';
+import { User } from '../../user-service/domain/User';
 import { Car } from '../../car-service/domain/Car';
 
 export async function seedDatabase(db: Db): Promise<void> {
