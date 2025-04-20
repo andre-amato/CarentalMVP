@@ -66,4 +66,8 @@ export class MongoUserRepository implements UserRepository {
       drivingLicense,
     });
   }
+  async findAll(): Promise<User[]> {
+    const usersData = await this.collection.find().toArray();
+    return usersData.map((userData) => this.mapToDomain(userData));
+  }
 }

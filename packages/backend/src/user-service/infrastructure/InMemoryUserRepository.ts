@@ -30,4 +30,7 @@ export class InMemoryUserRepository implements UserRepository {
   async clear(): Promise<void> {
     this.users.clear();
   }
+  async findAll(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
 }

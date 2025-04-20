@@ -1,8 +1,7 @@
-import { AvailableCarDTO } from '../../shared/types';
 import { BookingRepository } from '../../booking-service/domain/BookingRepository';
 import { DateRange } from '../../shared/domain/DateRange';
+import { AvailableCarDTO } from '../../shared/types';
 import { CarRepository } from '../domain/CarRepository';
-import { describe, beforeEach, it, expect } from '@jest/globals';
 
 export class GetAvailableCarsUseCase {
   constructor(

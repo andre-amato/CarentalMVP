@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import { CreateUserUseCase } from '../user-service/application/CreateUserUseCase';
 import { DeleteUserUseCase } from '../user-service/application/DeleteUserUseCase';
+import { GetAllUsersUseCase } from '../user-service/application/GetAllUsersUseCase';
 import { GetUserUseCase } from '../user-service/application/GetUserUseCase';
 
 export class UserController {
   constructor(
     private createUserUseCase: CreateUserUseCase,
     private getUserUseCase: GetUserUseCase,
-    private deleteUserUseCase: DeleteUserUseCase
+    private deleteUserUseCase: DeleteUserUseCase,
+    private getAllUsersUseCase: GetAllUsersUseCase
   ) {}
 
   async createUser(req: Request, res: Response): Promise<void> {
@@ -108,6 +110,33 @@ export class UserController {
         return;
       }
 
+      res.status(500).json({
+        message:
+          error instanceof Error
+            ? error.message
+            : 'An unexpected error occurred',
+      });
+    }
+  }
+
+  async getAllUsers(req: Request, res: Response): Promise<void> {
+    try {
+      const users = await this.getAllUsersUseCase.execute();
+
+      // Map to DTOs to avoid exposing domain objects
+      const userDTOs = users.map((user) => ({
+        id: user.getId(),
+        name: user.name,
+        email: user.email,
+        drivingLicense: {
+          licenseNumber: user.drivingLicense.licenseNumber,
+          expiryDate: user.drivingLicense.expiryDate,
+        },
+      }));
+
+      res.status(200).json(userDTOs);
+    } catch (error) {
+      console.error('Error in getAllUsers:', error);
       res.status(500).json({
         message:
           error instanceof Error

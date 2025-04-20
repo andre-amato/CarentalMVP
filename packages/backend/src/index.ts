@@ -10,17 +10,23 @@ import { setupRoutes } from './api/routes';
 
 import { CreateBookingUseCase } from './booking-service/application/CreateBookingUseCase';
 import { DeleteBookingUseCase } from './booking-service/application/DeleteBookingUseCase';
+import { GetAllBookingsUseCase } from './booking-service/application/GetAllBookingsUseCase';
+import { GetBookingsByCarIdUseCase } from './booking-service/application/GetBookingsByCarIdUseCase';
+import { GetBookingsByUserIdUseCase } from './booking-service/application/GetBookingsByUserIdUseCase';
 import { MongoBookingRepository } from './booking-service/infrastructure/MongoBookingRepository';
-import { MongoUserRepository } from './user-service/infrastructure/MongoUserRepository';
 
 import { GetAvailableCarsUseCase } from './car-service/application/GetAvailableCarsUseCase';
+import { GetAllCarsUseCase } from './car-service/application/GetAllCarsUseCase';
+import { GetCarByIdUseCase } from './car-service/application/GetCarByIdUseCase';
 import { MongoCarRepository } from './car-service/infrastructure/MongoCarRepository';
 
 import { CreateUserUseCase } from './user-service/application/CreateUserUseCase';
 import { DeleteUserUseCase } from './user-service/application/DeleteUserUseCase';
 import { GetUserUseCase } from './user-service/application/GetUserUseCase';
+import { MongoUserRepository } from './user-service/infrastructure/MongoUserRepository';
 
 import { seedDatabase } from './shared/infrastructure/seedDatabase';
+import { GetAllUsersUseCase } from './user-service/application/GetAllUsersUseCase';
 
 async function bootstrap() {
   const app = express();
@@ -42,37 +48,58 @@ async function bootstrap() {
     const bookingRepository = new MongoBookingRepository(db);
     const userRepository = new MongoUserRepository(db);
 
-    // Use Cases
+    // Car Use Cases
     const getAvailableCarsUseCase = new GetAvailableCarsUseCase(
       carRepository,
       bookingRepository
     );
+    const getAllCarsUseCase = new GetAllCarsUseCase(carRepository);
+    const getCarByIdUseCase = new GetCarByIdUseCase(carRepository);
 
+    // Booking Use Cases
     const createBookingUseCase = new CreateBookingUseCase(
       bookingRepository,
       carRepository,
       userRepository
     );
-
     const deleteBookingUseCase = new DeleteBookingUseCase(
       bookingRepository,
       carRepository
     );
+    const getAllBookingsUseCase = new GetAllBookingsUseCase(bookingRepository);
+    const getBookingsByCarIdUseCase = new GetBookingsByCarIdUseCase(
+      bookingRepository
+    );
+    const getBookingsByUserIdUseCase = new GetBookingsByUserIdUseCase(
+      bookingRepository
+    );
 
+    // User Use Cases
     const createUserUseCase = new CreateUserUseCase(userRepository);
     const getUserUseCase = new GetUserUseCase(userRepository);
     const deleteUserUseCase = new DeleteUserUseCase(userRepository);
+    const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
 
     // Controllers
-    const carController = new CarController(getAvailableCarsUseCase);
+    const carController = new CarController(
+      getAvailableCarsUseCase,
+      getAllCarsUseCase,
+      getCarByIdUseCase
+    );
+
     const bookingController = new BookingController(
       createBookingUseCase,
-      deleteBookingUseCase
+      deleteBookingUseCase,
+      getAllBookingsUseCase,
+      getBookingsByCarIdUseCase,
+      getBookingsByUserIdUseCase
     );
+
     const userController = new UserController(
       createUserUseCase,
       getUserUseCase,
-      deleteUserUseCase
+      deleteUserUseCase,
+      getAllUsersUseCase
     );
 
     // Routes

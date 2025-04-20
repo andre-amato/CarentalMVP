@@ -95,4 +95,16 @@ export class Car {
   isAvailable(): boolean {
     return this.stock > 0;
   }
+
+  getPeakSeasonPrice(): number {
+    return this.peakSeasonPrice;
+  }
+
+  getMidSeasonPrice(): number {
+    return this.midSeasonPrice;
+  }
+
+  getOffSeasonPrice(): number {
+    return this.offSeasonPrice;
+  }
 }

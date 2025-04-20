@@ -247,4 +247,23 @@ export class MongoBookingRepository implements BookingRepository {
     const objectId = new ObjectId(id);
     await this.collection.deleteOne({ _id: objectId });
   }
+
+  async findAll(): Promise<Booking[]> {
+    const bookingsData = await this.collection.find().toArray();
+    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+  }
+
+  async findByUserId(userId: string): Promise<Booking[]> {
+    const bookingsData = await this.collection
+      .find({ 'user._id': userId })
+      .toArray();
+    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+  }
+
+  async findByCarId(carId: string): Promise<Booking[]> {
+    const bookingsData = await this.collection
+      .find({ 'car._id': carId })
+      .toArray();
+    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+  }
 }

@@ -1,9 +1,9 @@
-import { CreateBookingDTO } from '../../shared/types';
 import { CarRepository } from '../../car-service/domain/CarRepository';
 import { DateRange } from '../../shared/domain/DateRange';
+import { CreateBookingDTO } from '../../shared/types';
+import { UserRepository } from '../../user-service/domain/UserRepository';
 import { Booking } from '../domain/Booking';
 import { BookingRepository } from '../domain/BookingRepository';
-import { UserRepository } from '../../user-service/domain/UserRepository';
 
 export class CreateBookingUseCase {
   constructor(
@@ -15,6 +15,14 @@ export class CreateBookingUseCase {
   async execute(dto: CreateBookingDTO): Promise<string> {
     const { userId, carId, startDate, endDate } = dto;
 
+    // Validate ObjectId format for userId and carId
+    if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
+      throw new Error('Invalid user ID format');
+    }
+
+    if (!/^[0-9a-fA-F]{24}$/.test(carId)) {
+      throw new Error('Invalid car ID format');
+    }
     // Convert string dates to Date objects
     const dateRange = new DateRange(new Date(startDate), new Date(endDate));
 

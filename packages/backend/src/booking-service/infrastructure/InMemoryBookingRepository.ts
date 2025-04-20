@@ -49,4 +49,16 @@ export class InMemoryBookingRepository implements BookingRepository {
   async delete(id: string): Promise<void> {
     this.bookings.delete(id);
   }
+
+  async findByUserId(userId: string): Promise<Booking[]> {
+    return Array.from(this.bookings.values()).filter(
+      (booking) => booking.user.getId() === userId
+    );
+  }
+
+  async findByCarId(carId: string): Promise<Booking[]> {
+    return Array.from(this.bookings.values()).filter(
+      (booking) => booking.car.getId() === carId
+    );
+  }
 }

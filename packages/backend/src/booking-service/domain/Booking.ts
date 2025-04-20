@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Car } from '../../car-service/domain/Car';
 import { DateRange } from '../../shared/domain/DateRange';
 import { User } from '../../user-service/domain/User';
@@ -31,7 +32,7 @@ export class Booking {
   }
 
   private generateId(): string {
-    return Math.random().toString(36).substring(2, 9);
+    return new ObjectId().toString();
   }
 
   getId(): string {
