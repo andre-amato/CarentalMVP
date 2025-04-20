@@ -254,16 +254,34 @@ export class MongoBookingRepository implements BookingRepository {
   }
 
   async findByUserId(userId: string): Promise<Booking[]> {
-    const bookingsData = await this.collection
-      .find({ 'user._id': userId })
-      .toArray();
-    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    try {
+      const userObjectId = new ObjectId(userId);
+      const bookingsData = await this.collection
+        .find({ 'user._id': userObjectId })
+        .toArray();
+      return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    } catch (error) {
+      // Handle invalid ObjectId format
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async findByCarId(carId: string): Promise<Booking[]> {
-    const bookingsData = await this.collection
-      .find({ 'car._id': carId })
-      .toArray();
-    return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    try {
+      const carObjectId = new ObjectId(carId);
+      const bookingsData = await this.collection
+        .find({ 'car._id': carObjectId })
+        .toArray();
+      return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
+    } catch (error) {
+      // Handle invalid ObjectId format
+      if (error instanceof Error && error.message.includes('ObjectId')) {
+        return [];
+      }
+      throw error;
+    }
   }
 }

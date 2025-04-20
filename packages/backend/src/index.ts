@@ -15,8 +15,8 @@ import { GetBookingsByCarIdUseCase } from './booking-service/application/GetBook
 import { GetBookingsByUserIdUseCase } from './booking-service/application/GetBookingsByUserIdUseCase';
 import { MongoBookingRepository } from './booking-service/infrastructure/MongoBookingRepository';
 
-import { GetAvailableCarsUseCase } from './car-service/application/GetAvailableCarsUseCase';
 import { GetAllCarsUseCase } from './car-service/application/GetAllCarsUseCase';
+import { GetAvailableCarsUseCase } from './car-service/application/GetAvailableCarsUseCase';
 import { GetCarByIdUseCase } from './car-service/application/GetCarByIdUseCase';
 import { MongoCarRepository } from './car-service/infrastructure/MongoCarRepository';
 
@@ -77,7 +77,10 @@ async function bootstrap() {
     // User Use Cases
     const createUserUseCase = new CreateUserUseCase(userRepository);
     const getUserUseCase = new GetUserUseCase(userRepository);
-    const deleteUserUseCase = new DeleteUserUseCase(userRepository);
+    const deleteUserUseCase = new DeleteUserUseCase(
+      userRepository,
+      bookingRepository
+    );
     const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
 
     // Controllers
