@@ -130,7 +130,6 @@ export class BookingController {
   async getBookingsByCarId(req: Request, res: Response): Promise<void> {
     try {
       const carId = req.params.carId;
-      console.log('Getting bookings for car ID:', carId);
 
       if (!carId) {
         res.status(400).json({ message: 'Car ID is required' });
@@ -138,7 +137,6 @@ export class BookingController {
       }
 
       const bookings = await this.getBookingsByCarIdUseCase.execute(carId);
-      console.log('Found bookings:', bookings.length);
 
       // Map to DTOs
       const bookingDTOs = bookings.map((booking) => ({

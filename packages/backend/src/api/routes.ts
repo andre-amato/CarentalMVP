@@ -12,9 +12,9 @@ export function setupRoutes(
 
   /**
    * @swagger
-   * /api/cars:
+   * /api/cars/available:
    *   get:
-   *     description: Get available cars for a date range
+   *     description: Get available cars for a date range with stock information
    *     parameters:
    *       - name: from
    *         in: query
@@ -30,9 +30,11 @@ export function setupRoutes(
    *           format: date
    *     responses:
    *       200:
-   *         description: List of available cars with pricing
+   *         description: List of available cars with pricing and stock information
    */
-  router.get('/cars', (req, res) => carController.getAvailableCars(req, res));
+  router.get('/cars/available', (req, res) =>
+    carController.getAvailableCars(req, res)
+  );
 
   /**
    * @swagger

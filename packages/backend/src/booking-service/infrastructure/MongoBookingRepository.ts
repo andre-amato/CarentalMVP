@@ -86,30 +86,41 @@ export class MongoBookingRepository implements BookingRepository {
     try {
       const carObjectId = new ObjectId(carId);
 
-      // Find bookings where the car is the same and date ranges overlap
+      // Normalize dates
+      const startDate = new Date(dateRange.startDate);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(dateRange.endDate);
+      endDate.setHours(23, 59, 59, 999);
+
+      console.log(
+        `Looking for bookings for car ${carId} between ${startDate.toISOString()} and ${endDate.toISOString()}`
+      );
+
+      // Find bookings for this car where the date ranges overlap
       const bookingsData = await this.collection
         .find({
           'car._id': carObjectId,
           $or: [
+            // Booking starts within the requested range
             {
-              // Start date of booking falls within the requested range
               'dateRange.startDate': {
-                $gte: dateRange.startDate,
-                $lte: dateRange.endDate,
+                $gte: startDate,
+                $lte: endDate,
               },
             },
+            // Booking ends within the requested range
             {
-              // End date of booking falls within the requested range
               'dateRange.endDate': {
-                $gte: dateRange.startDate,
-                $lte: dateRange.endDate,
+                $gte: startDate,
+                $lte: endDate,
               },
             },
+            // Booking spans the entire requested range
             {
-              // Booking encompasses the requested range
               $and: [
-                { 'dateRange.startDate': { $lte: dateRange.startDate } },
-                { 'dateRange.endDate': { $gte: dateRange.endDate } },
+                { 'dateRange.startDate': { $lte: startDate } },
+                { 'dateRange.endDate': { $gte: endDate } },
               ],
             },
           ],
@@ -118,6 +129,7 @@ export class MongoBookingRepository implements BookingRepository {
 
       return bookingsData.map((bookingData) => this.mapToDomain(bookingData));
     } catch (error) {
+      console.error(`Error finding bookings for car ${carId}:`, error);
       // Handle invalid ObjectId format
       if (error instanceof Error && error.message.includes('ObjectId')) {
         return [];

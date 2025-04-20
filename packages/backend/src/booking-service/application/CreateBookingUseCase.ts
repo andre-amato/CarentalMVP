@@ -23,6 +23,7 @@ export class CreateBookingUseCase {
     if (!/^[0-9a-fA-F]{24}$/.test(carId)) {
       throw new Error('Invalid car ID format');
     }
+
     // Convert string dates to Date objects
     const dateRange = new DateRange(new Date(startDate), new Date(endDate));
 
@@ -38,15 +39,21 @@ export class CreateBookingUseCase {
       throw new Error('Car not found');
     }
 
-    // Check if car is available
-    if (!car.isAvailable()) {
-      throw new Error('Car is not available');
+    // Check if the car is available for the requested date range
+    const existingCarBookings =
+      await this.bookingRepository.findByCarAndDateRange(carId, dateRange);
+
+    // Calculate effective availability
+    const baseStock = car.getStock();
+    if (existingCarBookings.length >= baseStock) {
+      throw new Error('Car is not available for the selected dates');
     }
 
     // Check if user already has booking for this date range
-    const existingBookings =
+    const existingUserBookings =
       await this.bookingRepository.findByUserAndDateRange(userId, dateRange);
-    if (existingBookings.length > 0) {
+
+    if (existingUserBookings.length > 0) {
       throw new Error('User already has a booking for this date range');
     }
 
@@ -68,11 +75,6 @@ export class CreateBookingUseCase {
       totalPrice,
     });
 
-    // Update car stock
-    car.decrementStock();
-
-    // Save changes
-    await this.carRepository.save(car);
     await this.bookingRepository.save(booking);
 
     return booking.getId();

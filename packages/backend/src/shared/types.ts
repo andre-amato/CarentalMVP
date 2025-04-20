@@ -29,6 +29,7 @@ export interface AvailableCarDTO {
   id: string;
   brand: string;
   model: string;
+  stock: number;
   totalPrice: number;
   averageDailyPrice: number;
 }

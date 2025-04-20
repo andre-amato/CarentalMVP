@@ -1,11 +1,7 @@
 import { BookingRepository } from '../domain/BookingRepository';
-import { CarRepository } from '../../car-service/domain/CarRepository';
 
 export class DeleteBookingUseCase {
-  constructor(
-    private bookingRepository: BookingRepository,
-    private carRepository: CarRepository
-  ) {}
+  constructor(private bookingRepository: BookingRepository) {}
 
   async execute(id: string): Promise<void> {
     const booking = await this.bookingRepository.findById(id);
@@ -14,14 +10,7 @@ export class DeleteBookingUseCase {
       throw new Error('Booking not found');
     }
 
-    // Increment car stock when booking is deleted
-    const car = await this.carRepository.findById(booking.car.getId());
-
-    if (car) {
-      car.incrementStock();
-      await this.carRepository.save(car);
-    }
-
+    // Simply delete the booking without modifying car stock
     await this.bookingRepository.delete(id);
   }
 }

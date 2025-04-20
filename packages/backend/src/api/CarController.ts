@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { GetAvailableCarsUseCase } from '../car-service/application/GetAvailableCarsUseCase';
 import { GetAllCarsUseCase } from '../car-service/application/GetAllCarsUseCase';
+import { GetAvailableCarsUseCase } from '../car-service/application/GetAvailableCarsUseCase';
 import { GetCarByIdUseCase } from '../car-service/application/GetCarByIdUseCase';
 
 export class CarController {
@@ -56,7 +56,6 @@ export class CarController {
         id: car.getId(),
         brand: car.brand,
         model: car.model,
-        stock: car.getStock(),
         peakSeasonPrice: car.getPeakSeasonPrice(),
         midSeasonPrice: car.getMidSeasonPrice(),
         offSeasonPrice: car.getOffSeasonPrice(),
@@ -74,7 +73,6 @@ export class CarController {
     }
   }
 
-  // New method to get car by ID
   async getCarById(req: Request, res: Response): Promise<void> {
     try {
       const carId = req.params.id;
@@ -96,7 +94,6 @@ export class CarController {
         id: car.getId(),
         brand: car.brand,
         model: car.model,
-        stock: car.getStock(),
         peakSeasonPrice: car.getPeakSeasonPrice(),
         midSeasonPrice: car.getMidSeasonPrice(),
         offSeasonPrice: car.getOffSeasonPrice(),

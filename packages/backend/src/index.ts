@@ -62,10 +62,7 @@ async function bootstrap() {
       carRepository,
       userRepository
     );
-    const deleteBookingUseCase = new DeleteBookingUseCase(
-      bookingRepository,
-      carRepository
-    );
+    const deleteBookingUseCase = new DeleteBookingUseCase(bookingRepository);
     const getAllBookingsUseCase = new GetAllBookingsUseCase(bookingRepository);
     const getBookingsByCarIdUseCase = new GetBookingsByCarIdUseCase(
       bookingRepository

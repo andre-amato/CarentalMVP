@@ -27,7 +27,6 @@ export class MongoCarRepository implements CarRepository {
   }
 
   async findAvailableCars(dateRange: DateRange): Promise<Car[]> {
-    // Find cars with stock > 0
     const carsData = await this.collection
       .find({ stock: { $gt: 0 } })
       .toArray();
