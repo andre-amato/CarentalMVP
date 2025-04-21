@@ -4,7 +4,7 @@
   "description": "Carental backend service",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc && node scripts/add-js-extensions.js",
     "test:unit": "jest --coverage",

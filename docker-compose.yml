@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
+    command: sh -c "npm run build && npm start"
     environment:
       - MONGO_URI=mongodb://mongo:27017/carental
       - PORT=3000

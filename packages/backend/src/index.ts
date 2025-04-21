@@ -167,7 +167,7 @@ async function bootstrap() {
           },
         ],
       },
-      apis: [join(__dirname, './api/routes.ts')],
+      apis: [join(__dirname, './api/routes.js')],
     };
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
