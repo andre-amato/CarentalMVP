@@ -87,8 +87,9 @@ interface BookingCardProps {
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking }) => {
-  const startDate = new Date(booking.startDate);
-  const endDate = new Date(booking.endDate);
+  // Adjust dates with proper offsets - start date +1 day, end date +2 days
+  const startDate = new Date(new Date(booking.startDate).getTime() + 86400000); // Add 24 hours (86400000 ms)
+  const endDate = new Date(new Date(booking.endDate).getTime() + 86400000 * 2); // Add 48 hours (86400000 * 2 ms)
 
   // Calculate booking duration in days
   const durationMs = endDate.getTime() - startDate.getTime();

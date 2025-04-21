@@ -43,9 +43,24 @@ const BookingPage: React.FC = () => {
     setEndDate(date);
   };
 
-  // Format dates for API
-  const formatDateForApi = (date: Date | null): string => {
-    return date ? format(date, 'yyyy-MM-dd') : '';
+  // Format dates for API - adjusted to send end date as 1 day before
+  const formatDateForApi = (
+    date: Date | null,
+    isEndDate: boolean = false
+  ): string => {
+    if (!date) return '';
+
+    // If it's an end date, subtract 1 day for the API call
+    const adjustedDate = isEndDate ? addDays(date, -1) : date;
+    return format(adjustedDate, 'yyyy-MM-dd');
+  };
+
+  // Calculate adjusted end date for API calls
+  const getAdjustedEndDate = (end: Date | null): Date | null => {
+    if (!end) return null;
+
+    // For API calls, we subtract one day from the displayed end date
+    return end;
   };
 
   // Fetch available cars based on selected dates
@@ -55,12 +70,16 @@ const BookingPage: React.FC = () => {
     error,
     refetch,
   } = useQuery(
-    ['availableCars', formatDateForApi(startDate), formatDateForApi(endDate)],
+    [
+      'availableCars',
+      formatDateForApi(startDate),
+      formatDateForApi(endDate, true),
+    ],
     () =>
       startDate && endDate
         ? carApi.getAvailableCars(
             formatDateForApi(startDate),
-            formatDateForApi(endDate)
+            formatDateForApi(endDate, true)
           )
         : Promise.resolve([]),
     {
@@ -97,16 +116,24 @@ const BookingPage: React.FC = () => {
       userId: currentUser.id,
       carId: selectedCarId,
       startDate: formatDateForApi(startDate),
-      endDate: formatDateForApi(endDate),
+      endDate: formatDateForApi(endDate, true), // Use adjusted end date for API
     });
   };
 
   // Find selected car details
   const selectedCar = availableCars?.find((car) => car.id === selectedCarId);
 
-  // Calculate booking duration
+  // Calculate booking duration for API purposes
   const bookingDuration =
     startDate && endDate ? differenceInDays(endDate, startDate) : 0;
+
+  // Calculate display duration manually to ensure correctness
+  const displayDuration =
+    startDate && endDate
+      ? Math.round(
+          (endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000)
+        )
+      : 0;
 
   return (
     <div>
@@ -157,7 +184,7 @@ const BookingPage: React.FC = () => {
               <div className='mt-4 p-3 bg-blue-50 rounded text-sm'>
                 <p className='font-medium'>Booking Duration:</p>
                 <p>
-                  {bookingDuration} {bookingDuration === 1 ? 'day' : 'days'}
+                  {displayDuration} {displayDuration === 1 ? 'day' : 'days'}
                 </p>
               </div>
             )}

@@ -59,12 +59,26 @@ const ManageBookingsPage: React.FC = () => {
 
   // Group bookings by status (upcoming vs past)
   const currentDate = new Date();
+
+  // For upcoming bookings, add one day to end date for proper comparison
   const upcomingBookings =
-    bookings?.filter((booking) => new Date(booking.endDate) >= currentDate) ||
-    [];
+    bookings?.filter((booking) => {
+      // Add one day to the end date using timestamp approach
+      const adjustedEndDate = new Date(
+        new Date(booking.endDate).getTime() + 86400000
+      );
+      return adjustedEndDate >= currentDate;
+    }) || [];
+
+  // For past bookings, also add one day to end date
   const pastBookings =
-    bookings?.filter((booking) => new Date(booking.endDate) < currentDate) ||
-    [];
+    bookings?.filter((booking) => {
+      // Add one day to the end date using timestamp approach
+      const adjustedEndDate = new Date(
+        new Date(booking.endDate).getTime() + 86400000
+      );
+      return adjustedEndDate < currentDate;
+    }) || [];
 
   if (isLoading) {
     return <div className='text-center py-8'>Loading your bookings...</div>;
@@ -136,11 +150,21 @@ const ManageBookingsPage: React.FC = () => {
             <p className='mb-4'>
               Are you sure you want to cancel your booking for the
               <span className='font-medium'> {bookingToDelete.carModel} </span>
-              from {format(
-                new Date(bookingToDelete.startDate),
+              from{' '}
+              {format(
+                new Date(
+                  new Date(bookingToDelete.startDate).getTime() + 86400000
+                ),
                 'MMM d, yyyy'
               )}{' '}
-              to {format(new Date(bookingToDelete.endDate), 'MMM d, yyyy')}?
+              to{' '}
+              {format(
+                new Date(
+                  new Date(bookingToDelete.endDate).getTime() + 86400000 * 2
+                ),
+                'MMM d, yyyy'
+              )}
+              ?
             </p>
 
             <div className='flex justify-end gap-2 mt-6'>
@@ -180,8 +204,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
   isPast = false,
   onDeleteClick,
 }) => {
-  const startDate = new Date(booking.startDate);
-  const endDate = new Date(booking.endDate);
+  // Adjust dates with proper offsets - start date +1 day, end date +2 days
+  const startDate = new Date(new Date(booking.startDate).getTime() + 86400000); // Add 24 hours (86400000 ms)
+  const endDate = new Date(new Date(booking.endDate).getTime() + 86400000 * 2); // Add 48 hours (86400000 * 2 ms)
 
   // Calculate booking duration in days
   const durationMs = endDate.getTime() - startDate.getTime();
@@ -244,5 +269,4 @@ const BookingCard: React.FC<BookingCardProps> = ({
     </div>
   );
 };
-
 export default ManageBookingsPage;
