@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
               className='block text-gray-700 text-sm font-bold mb-2'
               htmlFor='email'
             >
-              Email
+              E-mail
             </label>
             <input
               id='email'

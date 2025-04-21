@@ -1,20 +1,19 @@
-// src/App.tsx
+import { QueryClient, QueryClientProvider } from 'react-query';
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { UserProvider, useUser } from './contexts/UserContext';
 
 // Pages
-import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
+import Layout from './components/Layout';
 import BookingPage from './pages/BookingPage';
+import DashboardPage from './pages/DashboardPage';
+import LoginPage from './pages/LoginPage';
 import ManageBookingsPage from './pages/ManageBookingsPage';
 import SettingsPage from './pages/SettingsPage';
-import Layout from './components/Layout';
 
 // Create React Query client
 const queryClient = new QueryClient({

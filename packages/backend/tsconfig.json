@@ -7,7 +7,8 @@
     "outDir": "./dist",
     "strict": true,
     "types": ["node", "jest"],
-    "allowJs": true
+    "allowJs": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*", "scripts", "tests", "jest.setup.ts"],
   "exclude": ["node_modules"]

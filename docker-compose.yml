@@ -14,8 +14,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
+    # Remove the public port exposure or change it if you want direct access
+    # ports:
+    #   - '3000:3000'
     environment:
       - MONGO_URI=mongodb://mongo:27017/carental
       - PORT=3000
@@ -29,11 +30,23 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: frontend.Dockerfile
+      dockerfile: Dockerfile.frontend
     ports:
-      - '5173:5173'
+      - '5173:80'
     environment:
-      - VITE_API_URL=http://backend:3000/api
+      # Update this to point to the nginx proxy instead of directly to backend
+      - VITE_API_URL=http://localhost:8080/api
+    depends_on:
+      - backend
+    networks:
+      - carental-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - '8080:80'
     depends_on:
       - backend
     networks:
