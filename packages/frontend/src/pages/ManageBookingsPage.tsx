@@ -2,8 +2,9 @@ import { format } from 'date-fns';
 import { AlertCircle, Calendar, Car, DollarSign, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Booking, bookingApi } from '../api/apiClient';
+import { bookingApi } from '../api/apiClient';
 import { useUser } from '../contexts/UserContext';
+import { Booking } from '../types/types';
 
 const ManageBookingsPage: React.FC = () => {
   const { currentUser } = useUser();

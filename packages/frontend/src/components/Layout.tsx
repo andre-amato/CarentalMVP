@@ -27,38 +27,50 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className='flex h-screen bg-gray-100'>
+    <div className='flex h-screen bg-gradient-to-br from-teal-50 to-green-100'>
       {/* Sidebar */}
-      <div className='w-64 bg-white shadow-md'>
-        <div className='p-4 border-b'>
-          <h2 className='text-xl font-semibold text-gray-800'>Carental</h2>
-          <p className='text-sm text-gray-600 mt-1'>
-            Hello, {currentUser.name}
+      <div className='w-64 bg-white shadow-xl'>
+        <div className='p-5 border-b border-gray-100'>
+          <img
+            src='/logo.png'
+            alt='Logo'
+            className='h-12 rounded-xl border border-gray-200 shadow-sm ml-12'
+          />
+          <p className='text-sm text-gray-600 mt-3 text-center'>
+            Welcome, {currentUser.name}
           </p>
         </div>
-        <nav className='mt-4'>
-          <ul>
+        <nav className='mt-6'>
+          <ul className='space-y-1'>
             {navItems.map((item) => (
-              <li key={item.path} className='mb-1'>
+              <li key={item.path}>
                 <Link
                   to={item.path}
-                  className={`flex items-center px-4 py-3 text-gray-700 ${
+                  className={`flex items-center px-5 py-3 mx-2 rounded-lg transition duration-200 ${
                     location.pathname === item.path
-                      ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-600'
-                      : 'hover:bg-gray-50'
+                      ? 'bg-teal-50 text-teal-600 border-r-4 border-teal-600 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <span className='mr-3'>{item.icon}</span>
+                  <span
+                    className={`mr-3 ${
+                      location.pathname === item.path
+                        ? 'text-teal-600'
+                        : 'text-gray-500'
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li className='mb-1'>
+            <li className='px-2 mt-6'>
               <button
                 onClick={logout}
-                className='flex items-center w-full px-4 py-3 text-gray-700 hover:bg-gray-50'
+                className='flex items-center w-full px-5 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition duration-200'
               >
-                <span className='mr-3'>
+                <span className='mr-3 text-gray-500'>
                   <LogOut size={20} />
                 </span>
                 Logout
@@ -70,7 +82,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       {/* Main content */}
       <div className='flex-1 overflow-auto'>
-        <div className='p-6'>{children}</div>
+        <div className='p-6 max-w-7xl mx-auto'>
+          <div className='bg-white rounded-xl shadow-md p-6'>{children}</div>
+        </div>
       </div>
     </div>
   );

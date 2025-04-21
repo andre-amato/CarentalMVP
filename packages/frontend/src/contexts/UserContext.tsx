@@ -5,7 +5,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { User, userApi } from '../api/apiClient';
+import { userApi } from '../api/apiClient';
+import { User } from '../types/types';
 
 interface UserContextType {
   currentUser: User | null;
