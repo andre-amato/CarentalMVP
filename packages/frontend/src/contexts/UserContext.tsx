@@ -15,6 +15,7 @@ interface UserContextType {
   login: (email: string, licenseNumber: string) => Promise<boolean>;
   logout: () => void;
   deleteAccount: () => Promise<boolean>;
+  setError: (msg: string | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -60,8 +61,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   ): Promise<boolean> => {
     try {
       setLoading(true);
-      // Since we don't have real authentication, we'll search for the user by email
       const users = await userApi.getAllUsers();
+
       const matchedUser = users.find(
         (user) =>
           user.email.toLowerCase() === email.toLowerCase() &&
@@ -77,9 +78,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       localStorage.setItem('userId', matchedUser.id);
       setError(null);
       return true;
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login failed:', err);
-      setError('Login failed. Please try again.');
+      const backendMessage =
+        err?.response?.data?.message || 'Login failed. Please try again.';
+      setError(backendMessage);
       return false;
     } finally {
       setLoading(false);
@@ -111,7 +114,15 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ currentUser, loading, error, login, logout, deleteAccount }}
+      value={{
+        currentUser,
+        loading,
+        error,
+        login,
+        logout,
+        deleteAccount,
+        setError,
+      }}
     >
       {children}
     </UserContext.Provider>

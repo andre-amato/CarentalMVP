@@ -6,7 +6,7 @@ import { CreateUserRequest } from '../types/types';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, error: loginError } = useUser();
+  const { login, error: loginError, setError } = useUser();
 
   // Login form state
   const [email, setEmail] = useState('');
@@ -122,7 +122,10 @@ const LoginPage: React.FC = () => {
               className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
               placeholder='your@email.com'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (loginError) setError(null);
+              }}
               required
             />
           </div>
@@ -141,9 +144,9 @@ const LoginPage: React.FC = () => {
               placeholder='ABC123'
               value={licenseNumber}
               onChange={(e) => {
-                // Limit to 6 characters
                 if (e.target.value.length <= 6) {
                   setLicenseNumber(e.target.value);
+                  if (loginError) setError(null);
                 }
               }}
               maxLength={6}
