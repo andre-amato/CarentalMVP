@@ -1,7 +1,10 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import { dirname } from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 import { BookingController } from './api/BookingController';
 import { CarController } from './api/CarController';
@@ -32,6 +35,8 @@ async function bootstrap() {
   const app = express();
   app.use(express.json());
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
   const MONGO_URI = process.env.MONGO_URI || 'mongodb://mongo:27017';
   const DB_NAME = process.env.DB_NAME || 'carental';
 
@@ -124,7 +129,7 @@ async function bootstrap() {
           },
         ],
       },
-      apis: ['./src/api/routes.ts'],
+      apis: [path.join(__dirname, './api/routes.js')],
     };
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);

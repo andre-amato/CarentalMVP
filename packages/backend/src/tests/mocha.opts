@@ -1,0 +1,6 @@
+// tests/mocha.opts
+--require ts-node/register
+--extension ts
+--recursive
+--timeout 10000
+--exit
