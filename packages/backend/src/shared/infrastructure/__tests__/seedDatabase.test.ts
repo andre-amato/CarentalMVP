@@ -1,30 +1,40 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { Collection, Db } from 'mongodb';
-import { Car } from '../../../car-service/domain/Car';
+import { Db, Collection } from 'mongodb';
 import { seedDatabase } from '../seedDatabase';
+import { Car } from '../../../car-service/domain/Car';
+import { User } from '../../../user-service/domain/User';
+import { DrivingLicense } from '../../../user-service/domain/DrivingLicense';
 
 describe('seedDatabase', () => {
   let mockDb: jest.Mocked<Db>;
   let mockCarsCollection: jest.Mocked<Collection>;
   let mockUsersCollection: jest.Mocked<Collection>;
   let mockBookingsCollection: jest.Mocked<Collection>;
-  let consoleSpy: jest.SpyInstance;
+  let consoleSpy: jest.SpiedFunction<typeof console.log>; // Fix for SpyInstance error
 
   beforeEach(() => {
     // Mock collections
     mockCarsCollection = {
       drop: jest.fn(),
-      insertOne: jest.fn().mockResolvedValue({ insertedId: 'test-id' }),
+      insertOne: jest.fn(),
     } as unknown as jest.Mocked<Collection>;
 
     mockUsersCollection = {
       drop: jest.fn(),
-      insertOne: jest.fn().mockResolvedValue({ insertedId: 'test-id' }),
+      insertOne: jest.fn(),
     } as unknown as jest.Mocked<Collection>;
 
     mockBookingsCollection = {
       drop: jest.fn(),
     } as unknown as jest.Mocked<Collection>;
+
+    // Set up resolved values for insertOne mock functions
+    mockCarsCollection.insertOne.mockResolvedValue({
+      insertedId: 'test-id',
+    } as any);
+    mockUsersCollection.insertOne.mockResolvedValue({
+      insertedId: 'test-id',
+    } as any);
 
     // Mock DB
     mockDb = {
@@ -44,6 +54,10 @@ describe('seedDatabase', () => {
 
     // Mock console.log
     consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
   });
 
   afterEach(() => {
@@ -185,8 +199,9 @@ describe('seedDatabase', () => {
     // Check that the user IDs are correctly mapped to ObjectIds
     mockUsersCollection.insertOne.mock.calls.forEach((call) => {
       const userData = call[0];
-      expect(userData._id).toBeDefined();
-      expect(userData._id.toString()).toMatch(/^[a-f\d]{24}$/i); // Check for valid ObjectId format
+      expect(userData).toBeDefined(); // Check userData exists first
+      expect(userData?._id).toBeDefined(); // Use optional chaining
+      expect(userData?._id?.toString()).toMatch(/^[a-f\d]{24}$/i); // Check for valid ObjectId format
     });
   });
 
