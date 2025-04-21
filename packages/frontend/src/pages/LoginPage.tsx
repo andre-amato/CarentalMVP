@@ -95,15 +95,23 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-100'>
-      <div className='max-w-md w-full p-8 bg-white shadow-lg rounded-lg'>
-        <h1 className='text-3xl font-bold text-center mb-6'>Carental</h1>
-        <h2 className='text-xl text-center mb-6'>Login to Your Account</h2>
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-green-100'>
+      <div className='max-w-md w-full p-8 bg-white shadow-xl rounded-xl'>
+        <div className='flex justify-center mb-6'>
+          <img
+            src='/logo.png'
+            alt='Logo'
+            className='h-20 rounded-xl border border-gray-200 shadow-sm'
+          />
+        </div>
+        <h2 className='text-xl font-medium text-center mb-6 text-gray-700'>
+          Login to Your Account
+        </h2>
 
-        <form onSubmit={handleLogin}>
-          <div className='mb-4'>
+        <form onSubmit={handleLogin} className='space-y-5'>
+          <div>
             <label
-              className='block text-gray-700 text-sm font-bold mb-2'
+              className='block text-gray-700 text-sm font-medium mb-2'
               htmlFor='email'
             >
               E-mail
@@ -111,7 +119,7 @@ const LoginPage: React.FC = () => {
             <input
               id='email'
               type='email'
-              className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
               placeholder='your@email.com'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -119,9 +127,9 @@ const LoginPage: React.FC = () => {
             />
           </div>
 
-          <div className='mb-6'>
+          <div>
             <label
-              className='block text-gray-700 text-sm font-bold mb-2'
+              className='block text-gray-700 text-sm font-medium mb-2'
               htmlFor='licenseNumber'
             >
               Driving License Number
@@ -129,7 +137,7 @@ const LoginPage: React.FC = () => {
             <input
               id='licenseNumber'
               type='text'
-              className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
               placeholder='ABC123'
               value={licenseNumber}
               onChange={(e) => {
@@ -144,18 +152,44 @@ const LoginPage: React.FC = () => {
           </div>
 
           {loginError && (
-            <div className='mb-4 p-2 bg-red-100 text-red-700 rounded'>
+            <div className='p-3 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm'>
               {loginError}
             </div>
           )}
 
-          <div className='flex items-center justify-between'>
+          <div>
             <button
               type='submit'
-              className='w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50'
+              className='w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition duration-200 shadow-sm disabled:opacity-50'
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? (
+                <span className='flex items-center justify-center'>
+                  <svg
+                    className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                  >
+                    <circle
+                      className='opacity-25'
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='currentColor'
+                      strokeWidth='4'
+                    ></circle>
+                    <path
+                      className='opacity-75'
+                      fill='currentColor'
+                      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                    ></path>
+                  </svg>
+                  Logging in...
+                </span>
+              ) : (
+                'Login'
+              )}
             </button>
           </div>
         </form>
@@ -165,7 +199,7 @@ const LoginPage: React.FC = () => {
             Don't have an account?{' '}
             <button
               onClick={() => setIsModalOpen(true)}
-              className='text-blue-500 hover:text-blue-600 focus:outline-none'
+              className='text-teal-600 hover:text-teal-700 font-medium focus:outline-none transition duration-200'
               disabled={loading}
             >
               Create Account
@@ -175,14 +209,16 @@ const LoginPage: React.FC = () => {
 
         {/* Registration Modal */}
         {isModalOpen && (
-          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'>
-            <div className='bg-white rounded-lg p-6 w-full max-w-md'>
-              <h2 className='text-xl font-bold mb-4'>Create New Account</h2>
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm'>
+            <div className='bg-white rounded-xl p-6 w-full max-w-md shadow-2xl'>
+              <h2 className='text-xl font-bold mb-5 text-gray-800'>
+                Create New Account
+              </h2>
 
-              <form onSubmit={handleRegister}>
-                <div className='mb-4'>
+              <form onSubmit={handleRegister} className='space-y-4'>
+                <div>
                   <label
-                    className='block text-gray-700 text-sm font-bold mb-2'
+                    className='block text-gray-700 text-sm font-medium mb-2'
                     htmlFor='name'
                   >
                     Full Name
@@ -190,7 +226,7 @@ const LoginPage: React.FC = () => {
                   <input
                     id='name'
                     type='text'
-                    className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
                     placeholder='John Doe'
                     value={newUser.name}
                     onChange={(e) =>
@@ -200,9 +236,9 @@ const LoginPage: React.FC = () => {
                   />
                 </div>
 
-                <div className='mb-4'>
+                <div>
                   <label
-                    className='block text-gray-700 text-sm font-bold mb-2'
+                    className='block text-gray-700 text-sm font-medium mb-2'
                     htmlFor='newEmail'
                   >
                     Email
@@ -210,7 +246,7 @@ const LoginPage: React.FC = () => {
                   <input
                     id='newEmail'
                     type='email'
-                    className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
                     placeholder='your@email.com'
                     value={newUser.email}
                     onChange={(e) =>
@@ -220,9 +256,9 @@ const LoginPage: React.FC = () => {
                   />
                 </div>
 
-                <div className='mb-4'>
+                <div>
                   <label
-                    className='block text-gray-700 text-sm font-bold mb-2'
+                    className='block text-gray-700 text-sm font-medium mb-2'
                     htmlFor='newLicenseNumber'
                   >
                     Driving License Number
@@ -230,7 +266,7 @@ const LoginPage: React.FC = () => {
                   <input
                     id='newLicenseNumber'
                     type='text'
-                    className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
                     placeholder='ABC123'
                     value={newUser.drivingLicense.licenseNumber}
                     onChange={(e) => {
@@ -250,9 +286,9 @@ const LoginPage: React.FC = () => {
                   />
                 </div>
 
-                <div className='mb-6'>
+                <div>
                   <label
-                    className='block text-gray-700 text-sm font-bold mb-2'
+                    className='block text-gray-700 text-sm font-medium mb-2'
                     htmlFor='expiryDate'
                   >
                     License Expiry Date
@@ -260,7 +296,7 @@ const LoginPage: React.FC = () => {
                   <input
                     id='expiryDate'
                     type='date'
-                    className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    className='w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition duration-200'
                     value={newUser.drivingLicense.expiryDate}
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
@@ -283,25 +319,51 @@ const LoginPage: React.FC = () => {
                 </div>
 
                 {registerError && (
-                  <div className='mb-4 p-2 bg-red-100 text-red-700 rounded'>
+                  <div className='p-3 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm'>
                     {registerError}
                   </div>
                 )}
 
-                <div className='flex justify-end gap-2'>
+                <div className='flex justify-end gap-3 mt-6'>
                   <button
                     type='button'
-                    className='px-4 py-2 border border-gray-300 rounded hover:bg-gray-50'
+                    className='px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 font-medium transition duration-200'
                     onClick={() => setIsModalOpen(false)}
                   >
                     Cancel
                   </button>
                   <button
                     type='submit'
-                    className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50'
+                    className='px-5 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-medium transition duration-200 shadow-sm disabled:opacity-50'
                     disabled={loading}
                   >
-                    {loading ? 'Creating...' : 'Create Account'}
+                    {loading ? (
+                      <span className='flex items-center justify-center'>
+                        <svg
+                          className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                        >
+                          <circle
+                            className='opacity-25'
+                            cx='12'
+                            cy='12'
+                            r='10'
+                            stroke='currentColor'
+                            strokeWidth='4'
+                          ></circle>
+                          <path
+                            className='opacity-75'
+                            fill='currentColor'
+                            d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                          ></path>
+                        </svg>
+                        Creating...
+                      </span>
+                    ) : (
+                      'Create Account'
+                    )}
                   </button>
                 </div>
               </form>
