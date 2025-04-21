@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
       <div className='max-w-md w-full p-8 bg-white shadow-xl rounded-xl'>
         <div className='flex justify-center mb-6'>
           <img
-            src='/logo.png'
+            src='/public/logo.png'
             alt='Logo'
             className='h-20 rounded-xl border border-gray-200 shadow-sm'
           />

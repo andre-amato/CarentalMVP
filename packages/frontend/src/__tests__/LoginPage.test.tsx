@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import { UserProvider } from '../contexts/UserContext';
+import React from 'react';
 
 // Mock the API client
 vi.mock('../api/apiClient', () => ({
