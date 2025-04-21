@@ -7,7 +7,9 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "build": "tsc && node scripts/add-js-extensions.js",
-    "test:unit": "jest --coverage"
+    "test:unit": "jest --coverage",
+    "test:integration": "jest tests/integration --verbose",
+    "test:e2e": "jest tests/e2e"
   },
   "dependencies": {
     "@carental/shared": "1.0.0",
