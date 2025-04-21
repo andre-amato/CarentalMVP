@@ -206,14 +206,14 @@ const BookingPage: React.FC = () => {
                       </h3>
                       <div className='flex flex-wrap text-sm text-gray-600 mt-1'>
                         <span className='mr-4'>
-                          Available: {car.availableStock}{' '}
-                          {car.availableStock === 1 ? 'unit' : 'units'}
+                          Available: {car.stock}{' '}
+                          {car.stock === 1 ? 'unit' : 'units'}
                         </span>
                         <span>
                           {new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
-                          }).format(car.dailyPrice)}
+                          }).format(car.averageDailyPrice)}
                           /day
                         </span>
                       </div>
@@ -286,7 +286,7 @@ const BookingPage: React.FC = () => {
                     {new Intl.NumberFormat('en-US', {
                       style: 'currency',
                       currency: 'USD',
-                    }).format(selectedCar.dailyPrice)}
+                    }).format(selectedCar.averageDailyPrice)}
                   </span>
                 </div>
 

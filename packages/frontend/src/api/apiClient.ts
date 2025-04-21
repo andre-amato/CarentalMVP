@@ -20,8 +20,8 @@ export interface Car {
 
 export interface AvailableCar extends Car {
   totalPrice: number;
-  dailyPrice: number;
-  availableStock: number;
+  averageDailyPrice: number;
+  stock: number;
 }
 
 // User API interfaces
