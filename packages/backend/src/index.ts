@@ -162,7 +162,7 @@ async function bootstrap() {
         },
         servers: [
           {
-            url: 'http://localhost:3000',
+            url: 'http://localhost:8080',
             description: 'Development server',
           },
         ],
@@ -181,8 +181,9 @@ async function bootstrap() {
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📚 Swagger UI: http://localhost:${PORT}/api-docs`);
+      const publicPort = 8080;
+      console.log(`🚀 Server running on http://localhost:${publicPort}`);
+      console.log(`📚 Swagger UI: http://localhost:${publicPort}/api-docs`);
     });
   } catch (error) {
     console.error('❌ Failed to connect to MongoDB:', error);
