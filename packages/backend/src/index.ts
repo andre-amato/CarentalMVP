@@ -1,10 +1,9 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { fileURLToPath } from 'url';
-import path from 'path';
 
 import { BookingController } from './api/BookingController';
 import { CarController } from './api/CarController';
@@ -129,7 +128,7 @@ async function bootstrap() {
           },
         ],
       },
-      apis: [path.join(__dirname, './api/routes.js')],
+      apis: [join(__dirname, './api/routes.js')],
     };
 
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
