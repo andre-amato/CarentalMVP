@@ -91,7 +91,7 @@ describe('US2: Create Booking', () => {
     expect(second.body.message).toMatch(/already has a booking/i);
   });
 
-  it('should allow booking another car for the same period', async () => {
+  it('should not allow booking another car for the same period', async () => {
     const user = await db.collection('users').findOne({});
     const cars = await db.collection('cars').find().toArray();
     const car1 = cars[0];
