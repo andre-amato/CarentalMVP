@@ -2,8 +2,9 @@ import { format } from 'date-fns';
 import { CalendarDays, Clock, DollarSign } from 'lucide-react';
 import React from 'react';
 import { useQuery } from 'react-query';
-import { Booking, bookingApi } from '../api/apiClient';
+import { bookingApi } from '../api/apiClient';
 import { useUser } from '../contexts/UserContext';
+import { Booking } from '../types/types';
 
 const DashboardPage: React.FC = () => {
   const { currentUser } = useUser();
@@ -47,15 +48,6 @@ const DashboardPage: React.FC = () => {
   return (
     <div>
       <h1 className='text-2xl font-bold mb-6'>Dashboard</h1>
-
-      <div className='mb-8'>
-        <h2 className='text-xl font-semibold mb-4'>
-          Good morning, {currentUser?.name}
-        </h2>
-        <p className='text-gray-600'>
-          Welcome to Carental - your car rental service in Barcelona.
-        </p>
-      </div>
 
       <div className='mb-8'>
         <h3 className='text-lg font-semibold mb-4'>Your Bookings</h3>

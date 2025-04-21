@@ -1,5 +1,12 @@
 import axios from 'axios';
-
+import {
+  AvailableCar,
+  Booking,
+  Car,
+  CreateBookingRequest,
+  CreateUserRequest,
+  User,
+} from '../types/types';
 // Create base axios instance
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
@@ -7,61 +14,6 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// Car API interfaces
-export interface Car {
-  id: string;
-  brand: string;
-  model: string;
-  peakSeasonPrice: number;
-  midSeasonPrice: number;
-  offSeasonPrice: number;
-}
-
-export interface AvailableCar extends Car {
-  totalPrice: number;
-  averageDailyPrice: number;
-  stock: number;
-}
-
-// User API interfaces
-export interface DrivingLicense {
-  licenseNumber: string;
-  expiryDate: string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  drivingLicense: DrivingLicense;
-}
-
-export interface CreateUserRequest {
-  name: string;
-  email: string;
-  drivingLicense: DrivingLicense;
-}
-
-// Booking API interfaces
-export interface Booking {
-  id: string;
-  userId: string;
-  userName?: string;
-  carId: string;
-  carModel?: string;
-  startDate: string;
-  endDate: string;
-  totalPrice: number;
-  createdAt: string;
-}
-
-export interface CreateBookingRequest {
-  userId: string;
-  carId: string;
-  startDate: string;
-  endDate: string;
-}
 
 // API methods
 export const carApi = {

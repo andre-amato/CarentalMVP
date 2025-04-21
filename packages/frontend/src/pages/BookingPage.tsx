@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { bookingApi, carApi } from '../api/apiClient';
 import { useUser } from '../contexts/UserContext';
+import { CarAvaiableBooking } from '../types/types';
 
 const TypedDatePicker = DatePicker as unknown as React.FC<any>;
 const BookingPage: React.FC = () => {
@@ -135,6 +136,14 @@ const BookingPage: React.FC = () => {
         )
       : 0;
 
+  // Handle car selection with validation for 0 stock
+  const handleCarSelection = (car: CarAvaiableBooking) => {
+    // Only allow selection if stock is greater than 0
+    if (car.stock > 0) {
+      setSelectedCarId(car.id);
+    }
+  };
+
   return (
     <div>
       <h1 className='text-2xl font-bold mb-6'>Book a Car</h1>
@@ -210,12 +219,14 @@ const BookingPage: React.FC = () => {
                 {availableCars.map((car) => (
                   <div
                     key={car.id}
-                    className={`p-4 border rounded-lg flex items-center cursor-pointer transition-colors ${
-                      selectedCarId === car.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300'
+                    className={`p-4 border rounded-lg flex items-center transition-colors ${
+                      car.stock === 0
+                        ? 'border-gray-200 bg-gray-100 opacity-50 cursor-not-allowed'
+                        : selectedCarId === car.id
+                        ? 'border-blue-500 bg-blue-50 cursor-pointer'
+                        : 'border-gray-200 hover:border-blue-300 cursor-pointer'
                     }`}
-                    onClick={() => setSelectedCarId(car.id)}
+                    onClick={() => car.stock > 0 && handleCarSelection(car)}
                   >
                     <div className='flex-shrink-0 mr-4'>
                       {car.brand.toLowerCase().includes('truck') ||
@@ -256,7 +267,7 @@ const BookingPage: React.FC = () => {
                       <div className='text-xs text-gray-500'>Total</div>
                     </div>
 
-                    {selectedCarId === car.id && (
+                    {selectedCarId === car.id && car.stock > 0 && (
                       <div className='ml-2 text-blue-500'>
                         <Check size={20} />
                       </div>

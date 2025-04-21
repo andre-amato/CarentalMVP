@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CreateUserRequest, userApi } from '../api/apiClient';
+import { userApi } from '../api/apiClient';
 import { useUser } from '../contexts/UserContext';
+import { CreateUserRequest } from '../types/types';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ const LoginPage: React.FC = () => {
     },
   });
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const getTomorrowDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +132,13 @@ const LoginPage: React.FC = () => {
               className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
               placeholder='ABC123'
               value={licenseNumber}
-              onChange={(e) => setLicenseNumber(e.target.value)}
+              onChange={(e) => {
+                // Limit to 6 characters
+                if (e.target.value.length <= 6) {
+                  setLicenseNumber(e.target.value);
+                }
+              }}
+              maxLength={6}
               required
             />
           </div>
@@ -221,15 +233,19 @@ const LoginPage: React.FC = () => {
                     className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
                     placeholder='ABC123'
                     value={newUser.drivingLicense.licenseNumber}
-                    onChange={(e) =>
-                      setNewUser({
-                        ...newUser,
-                        drivingLicense: {
-                          ...newUser.drivingLicense,
-                          licenseNumber: e.target.value,
-                        },
-                      })
-                    }
+                    onChange={(e) => {
+                      // Limit to 6 characters
+                      if (e.target.value.length <= 6) {
+                        setNewUser({
+                          ...newUser,
+                          drivingLicense: {
+                            ...newUser.drivingLicense,
+                            licenseNumber: e.target.value,
+                          },
+                        });
+                      }
+                    }}
+                    maxLength={6}
                     required
                   />
                 </div>
@@ -246,15 +262,22 @@ const LoginPage: React.FC = () => {
                     type='date'
                     className='w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500'
                     value={newUser.drivingLicense.expiryDate}
-                    onChange={(e) =>
-                      setNewUser({
-                        ...newUser,
-                        drivingLicense: {
-                          ...newUser.drivingLicense,
-                          expiryDate: e.target.value,
-                        },
-                      })
-                    }
+                    onChange={(e) => {
+                      const selectedDate = new Date(e.target.value);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+
+                      if (selectedDate >= today) {
+                        setNewUser({
+                          ...newUser,
+                          drivingLicense: {
+                            ...newUser.drivingLicense,
+                            expiryDate: e.target.value,
+                          },
+                        });
+                      }
+                    }}
+                    min={getTomorrowDate()}
                     required
                   />
                 </div>
