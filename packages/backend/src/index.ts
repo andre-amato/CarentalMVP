@@ -35,39 +35,6 @@ async function bootstrap() {
   const app = express();
   app.use(express.json());
 
-  // Then set up CORS
-  app.use(
-    cors({
-      origin: function (origin, callback) {
-        // For development - allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        // List of allowed origins - add your frontend URL
-        const allowedOrigins = [
-          'http://localhost:5174',
-          'http://localhost:5173',
-        ];
-        if (
-          allowedOrigins.includes(origin) ||
-          origin.startsWith('http://localhost:')
-        ) {
-          return callback(null, true);
-        }
-
-        callback(new Error('Not allowed by CORS'));
-      },
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true,
-    })
-  );
-  app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.status(200).send();
-  });
-
   app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     console.log(`[CORS CHECK] Origin: ${req.headers.origin}`);
