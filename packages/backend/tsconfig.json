@@ -5,8 +5,10 @@
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "outDir": "./dist",
-    "strict": true
+    "strict": true,
+    "types": ["node", "jest"],
+    "allowJs": true
   },
-  "include": ["src/**/*", "scripts", "tests"],
-  "exclude": ["node_modules", "**/*.test.ts", "tests"]
+  "include": ["src/**/*", "scripts", "tests", "jest.setup.ts"],
+  "exclude": ["node_modules"]
 }
