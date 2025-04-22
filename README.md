@@ -1,51 +1,27 @@
-docker-compose up
-npm i
-npm run dev
-
-Front
-✗ npm run test:frontend
-
-To run this tests, restart the backend with
-docker-compose down
-
-And then
-docker-compose up
-
-npx cypress open
-
-Backend
-
-npm run
-"test:backend:unit":
-"test:backend:integration":
-"test:backend:e2e":
-
 # Carental - Car Rental System MVP
 
-This project is an MVP (Minimum Viable Product) for a car rental system. It demonstrates a booking engine for car rentals with clean, maintainable architecture.
+A clean, maintainable MVP for a car rental booking system built with modern technologies and best practices.
 
-## Project Structure
+## Overview
 
-The project follows a monorepo structure with the following main components:
+This project demonstrates a car rental booking engine with a robust architecture following Domain-Driven Design principles. The application features a monorepo structure with separate backend and frontend components that share common utilities and types.
 
-- **Backend**: Node.js API built with Express, MongoDB, and TypeScript
-- **Frontend**: React application built with Vite, TypeScript, and Tailwind CSS
-- **Shared**: Shared types and utilities between frontend and backend
+## Features
 
-The application is structured using Domain-Driven Design (DDD) principles, with clear separation between:
+- User registration and authentication
+- Vehicle browsing by availability and date range
+- Booking creation and management
+- Dynamic seasonal pricing (peak, mid, off-season)
+- Inventory management for multiple vehicles of the same model
+
+## Architecture
+
+The application implements Clean Architecture with clear separation between:
 
 - **Domain Layer**: Core business logic and entities
 - **Application Layer**: Use cases orchestrating domain operations
 - **Infrastructure Layer**: Implementation details (databases, APIs)
 - **API Layer**: Controllers and routes for external communication
-
-## Features
-
-- User registration and management
-- Browse available cars by date range
-- Create and manage bookings
-- Seasonal pricing (peak, mid, off-season)
-- Inventory management for multiple cars of the same model
 
 ## Tech Stack
 
@@ -53,14 +29,15 @@ The application is structured using Domain-Driven Design (DDD) principles, with 
 
 - Node.js with Express
 - TypeScript
-- MongoDB for data storage
+- MongoDB
 - Swagger for API documentation
 
 ### Frontend
 
 - React with TypeScript
-- Vite for fast builds
-- Tailwind CSS for styling
+- Vite for build optimization
+- Tailwind CSS
+- Responsive Design
 - React Query for data fetching
 - React Router for navigation
 - Lucide React for icons
@@ -68,12 +45,12 @@ The application is structured using Domain-Driven Design (DDD) principles, with 
 
 ### Testing
 
-- Unit tests with Vitest and React Testing Library
 - E2E tests with Cypress
+- Unit tests with Vitest and React Testing Library
 
 ### DevOps
 
-- Docker and Docker Compose for containerization
+- Docker and Docker Compose
 - Multi-stage builds for optimized images
 
 ## Getting Started
@@ -81,8 +58,8 @@ The application is structured using Domain-Driven Design (DDD) principles, with 
 ### Prerequisites
 
 - Docker and Docker Compose
-- Node.js 18+ (for local development)
-- npm (for local development)
+- Node.js 18+
+- npm
 
 ### Running with Docker
 
@@ -93,7 +70,7 @@ git clone https://github.com/yourusername/carental.git
 cd carental
 ```
 
-2. Start the application with Docker Compose:
+2. Start the backend:
 
 ```bash
 docker-compose up
@@ -102,80 +79,171 @@ docker-compose up
 This will start:
 
 - MongoDB on port 27017
-- Backend API on port 3000
-- Frontend on port 5173
+- Backend API with Express (proxied through Nginx)
+- API Documentation: http://localhost:8080/api-docs
 
-3. Access the application:
-   - Frontend: http://localhost:5173
-   - API Documentation: http://localhost:3000/api-docs
-
-### Development Setup
-
-For local development without Docker:
-
-1. Install dependencies:
+3. Start the frontend:
 
 ```bash
-npm install
-```
-
-2. Start MongoDB (you can use Docker for just the database):
-
-```bash
-docker-compose up mongo
-```
-
-3. Start the backend in development mode:
-
-```bash
-cd packages/backend
+npm i
 npm run dev
 ```
 
-4. Start the frontend in development mode:
+4. Access the application:
 
-```bash
-cd packages/frontend
-npm run dev
+```
+http://localhost:5173
 ```
 
 ## Testing
 
-### Running Unit Tests
+### Running End-to-End/Integration Tests
+
+These tests cover the application functionality from start to end and focus on two user stories:
+
+- US 1: As a customer I want to see the availability of cars on concrete time slots so I can be informed of pricing and stock
+
+  - All available cars for the complete time slot will be returned
+  - All cars returned will have the complete booking price and an average day/price
+
+- US 2: As a customer I want to create a booking for a car
+  - A user can have only one booking on the same dates
+  - Driving license must be valid through all booking period
+
+#### Frontend Tests (E2E)
+
+**IMPORTANT NOTE:**
+Before running Cypress tests, always restart Docker! The populated database can cause errors in testing.
+Restart with these commands:
 
 ```bash
-# Backend tests
-cd packages/backend
-npm test
-
-# Frontend tests
-cd packages/frontend
-npm test
+docker-compose down
+docker-compose up
 ```
 
-### Running End-to-End Tests
+Now, in a other terminal:
 
 ```bash
-# Run E2E tests in headless mode
-cd packages/frontend
-npm run test:e2e
+npx cypress open
+```
 
-# Open Cypress for interactive testing
-cd packages/frontend
-npm run test:e2e:open
+Click on E2E testing, select one of the suggested Cypress Browsers (Google Chrome or Electron)
+
+##### US1.cy.js Test Flow:
+
+1. Visit the homepage
+2. Click "Create Account" (open account modal)
+3. Fill out name, email, license number, and expiry date (enter user details)
+4. Submit the form and log in (create account and authenticate)
+5. Confirm "My Dashboard" is visible (verify successful login)
+6. Click "Book a Car" (navigate to booking page)
+7. Check default car availability (verify initial state)
+8. Set booking dates to June 1–5, 2028 (4 days) - Peak Season Check Prices
+   - Update pick-up and drop-off dates (enter date range)
+   - Wait for API refresh (load updated data)
+   - Confirm "Booking Duration: 4 days" is shown (verify duration)
+   - Check daily and total prices for all cars (validate price display)
+9. Set booking dates to September 20–25, 2028 (5 days) - Mid Season Check Prices
+   - Change pick-up and drop-off dates (enter new date range)
+   - Wait for API refresh (load new prices)
+   - Confirm "Booking Duration: 5 days" is shown (verify duration)
+   - Check updated pricing for all cars (validate price changes)
+10. Set booking dates to September 15–19, 2028 (4 days, seasonal transition Peak to Mid to check average price)
+    - Update date range again (adjust pick-up and drop-off)
+    - Wait for API refresh (load seasonal rates)
+    - Confirm "Booking Duration: 4 days" is shown (verify duration)
+    - Check prices and availability per car (verify seasonal pricing)
+    - Confirm availability info for each car (e.g., "Available: 3 units") (check stock levels)
+11. Click on "Jaguar" and confirm booking (simulate a booking and check correct availability)
+    - Click "Book Another Car" (return to booking view)
+    - Re-enter September 15–19, 2028 (repeat previous range to check availability)
+    - Confirm Jaguar now shows "Available: 0 unit" (verify updated availability after booking)
+
+##### US2.cy.js Test Flow:
+
+1. Visit the homepage
+2. Click "Create Account" (open account modal)
+3. Fill in name, email, license number, and expiry date (2030-12-01) (enter user details)
+4. Submit the form and log in (create account and authenticate)
+5. Confirm "My Dashboard" is visible (verify login success)
+6. Click "Book a Car" (navigate to booking page)
+7. Check default car availability (verify initial state)
+8. Set booking dates to September 15–19, 2030 (4 days)
+   - Update pick-up and drop-off fields (enter date range)
+   - Wait for API refresh (load prices and availability)
+   - Confirm "Booking Duration: 4 days" is shown (verify duration)
+   - Verify daily and total prices for all cars (confirm pricing display)
+   - Confirm availability info is displayed (check stock levels for all cars)
+   - Click on "Jaguar" and confirm booking (book the car)
+   - Click "Book Another Car" (start another booking process)
+9. Set booking dates to September 16–17, 2030 (Testing the booked car blocked period)
+   - Update pick-up and drop-off dates (enter new short range)
+   - Verify car availability info again (check updated stock)
+   - Confirm Jaguar now shows "Available: 0 unit" (verify booking impact)
+   - Click on "Vito" and try to book (attempt overlapping booking)
+   - Verify error: "User already has a booking for this date range" (check for conflict message)
+   - Reload the page (reset UI state)
+10. Set booking dates to November 29 – December 15, 2030 (Testing the drive license expired scenarios)
+    - Update pick-up and drop-off dates (enter future range)
+    - Click on "Vito" and try to confirm booking (attempt new booking)
+    - Verify error: "Driving license must be valid for the entire booking period" (check license validation)
+
+#### Backend Tests (E2E and Integration)
+
+Run these commands to test the backend:
+
+```bash
+npm run test:backend:integration
+```
+
+This tests:
+
+- US1: View car availability and pricing:
+
+  - Should return all available cars for complete time slot with pricing during peak season
+  - Should return correct pricing for mid-season booking
+  - Should return correct pricing for off-season booking
+  - Should validate invalid date parameters
+
+- US2: Create Booking:
+  - Should create a booking successfully
+  - Should fail if driving license expires before booking ends
+  - Should fail if the same user tries to book the same period with the same car
+  - Should not allow booking another car for the same period
+
+```bash
+npm run test:backend:e2e
+```
+
+This tests the complete booking flow:
+
+- Should create user, list cars, book one, and verify booking is registered
+
+### Running Unit Tests
+
+Frontend unit tests:
+
+```bash
+npm run test:frontend
+```
+
+Backend unit tests:
+
+```bash
+npm run test:backend:unit
 ```
 
 ## API Documentation
 
-The backend API is documented using Swagger. Once the application is running, you can access the Swagger UI at:
+Once the application is running, access the Swagger UI at:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:8080/api-docs
 ```
 
 ## Seeded Data
 
-The application comes with pre-seeded data for testing:
+The application includes pre-seeded data for testing:
 
 ### Users
 
@@ -194,39 +262,22 @@ The application comes with pre-seeded data for testing:
 
 ### Domain-Driven Design
 
-The backend follows DDD principles to ensure that business logic is centralized in the domain layer. This approach:
-
-- Makes the code more maintainable and testable
-- Separates business rules from infrastructure details
+- Centralizes business logic in the domain layer
+- Separates business rules from infrastructure
 - Enables easier adaptation to changing requirements
-
-### Clean Architecture
-
-The application implements Clean Architecture with clear boundaries between:
-
-- **Domain Layer**: Core business logic and entities
-- **Application Layer**: Use cases and service orchestration
-- **Infrastructure Layer**: External concerns like database access
-- **API Layer**: HTTP controllers and routes
 
 ### Repository Pattern
 
-Data access is abstracted through repositories, which:
-
-- Decouple domain logic from data storage
-- Make testing easier by allowing dependency injection
-- Ensure consistent data access patterns
+- Decouples domain logic from data storage
+- Facilitates testing through dependency injection
+- Ensures consistent data access patterns
 
 ## Future Improvements
 
-- Add authentication with JWT
-- Implement role-based access control
-- Add payment processing integration
-- Implement notifications via email/SMS
-- Add admin panel for fleet management
-- Improve test coverage
-- Add error tracking and monitoring
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- JWT authentication
+- Role-based access control
+- Payment processing integration
+- Email/SMS notifications
+- Admin panel for fleet management
+- Enhanced test coverage
+- Error tracking and monitoring
