@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
@@ -8,10 +8,7 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/setup-tests.ts',
     deps: {
-      inline: [/node_modules/],
-    },
-    resolve: {
-      conditions: ['development', 'browser'],
+      inline: ['**/node_modules/**'],
     },
   },
 });
