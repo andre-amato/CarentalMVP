@@ -74,7 +74,7 @@ code .
 
 2. Start the backend:
 
-In the terminal, run the following command from the root directory:
+In the terminal, check if you local Docker is running, then run the following command from the root directory:
 
 ```bash
 docker-compose up
@@ -135,9 +135,9 @@ Now, in a new terminal (from the root directory):
 npx cypress open
 ```
 
-Click on E2E testing, select one of the suggested Cypress Browsers (Google Chrome or Electron)
+Click on E2E testing, select one of the suggested Cypress Browsers (Google Chrome, Electron, Edge....)
 
-In the Cypress UI, choose the US1 or US2 
+In the Cypress UI, choose the US1 or US2
 (remember that the test uses the database within Docker, so, if needed to redo the test, restart docker like the example above!)
 
 ##### US1.cy.js Test Flow:
@@ -294,10 +294,9 @@ The application includes pre-seeded data for testing:
 - Error tracking and monitoring
 
   ## Images of the application (Browser and mobile)
-  <img width="526" alt="image" src="https://github.com/user-attachments/assets/7376f576-5898-4bf5-bd51-bdc3943ca852" />
-<img width="1509" alt="image" src="https://github.com/user-attachments/assets/7ac07ed7-2238-40a9-97d4-ac9d171ac1a8" />
-<img width="1498" alt="image" src="https://github.com/user-attachments/assets/e90ba2c7-66c2-41cf-a2d0-899b2fe1f3ee" />
-<img width="368" alt="image" src="https://github.com/user-attachments/assets/682ea868-2c55-49b9-a0f1-9cf6c82b4d75" />
-<img width="375" alt="image" src="https://github.com/user-attachments/assets/42436814-9164-411d-b4aa-1d51bc4054cf" />
 
-
+    <img width="526" alt="image" src="https://github.com/user-attachments/assets/7376f576-5898-4bf5-bd51-bdc3943ca852" />
+  <img width="1509" alt="image" src="https://github.com/user-attachments/assets/7ac07ed7-2238-40a9-97d4-ac9d171ac1a8" />
+  <img width="1498" alt="image" src="https://github.com/user-attachments/assets/e90ba2c7-66c2-41cf-a2d0-899b2fe1f3ee" />
+  <img width="368" alt="image" src="https://github.com/user-attachments/assets/682ea868-2c55-49b9-a0f1-9cf6c82b4d75" />
+  <img width="375" alt="image" src="https://github.com/user-attachments/assets/42436814-9164-411d-b4aa-1d51bc4054cf" />
