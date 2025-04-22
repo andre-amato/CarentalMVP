@@ -60,6 +60,7 @@ The application implements Clean Architecture with clear separation between:
 - Docker and Docker Compose
 - Node.js 18+
 - npm
+- Available ports: 27017 (MongoDB), 8080 (API/Nginx), and 5173 (frontend)
 
 ### Running Carental MVP
 
@@ -73,7 +74,7 @@ code .
 
 2. Start the backend:
 
-In the first terminal, run:
+In the terminal, run the following command from the root directory:
 
 ```bash
 docker-compose up
@@ -87,7 +88,7 @@ This will start:
 
 3. Start the frontend:
 
-In other terminal, run:
+In other terminal, run the following commands from the root directory:
 
 ```bash
 npm i
@@ -119,14 +120,16 @@ These tests cover the application functionality from start to end and focus on t
 
 **IMPORTANT NOTE:**
 Before running Cypress tests, always restart Docker! The populated database can cause errors in testing.
-For restart, open a new terminal and run with these commands:
+For restart, open a new terminal and run with these commands from the root directory:
 
 ```bash
 docker-compose down
 docker-compose up
 ```
 
-Now, in a new terminal:
+This process will reset and reseed the database with fresh test data each time
+
+Now, in a new terminal (from the root directory):
 
 ```bash
 npx cypress open
@@ -198,7 +201,7 @@ In the Cypress UI, choose the US1 or US2
 
 #### Backend Tests (E2E and Integration)
 
-Run these commands to test the backend:
+Run these commands to test the backend (from the root directory):
 
 ```bash
 npm run test:backend:integration
@@ -229,13 +232,13 @@ This tests the complete booking flow:
 
 ### Running Unit Tests
 
-Frontend unit tests:
+Frontend unit tests (from the root directory):
 
 ```bash
 npm run test:frontend
 ```
 
-Backend unit tests:
+Backend unit tests (from the root directory):
 
 ```bash
 npm run test:backend:unit
