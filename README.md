@@ -4,11 +4,11 @@ A clean, maintainable MVP for a car rental booking system built with modern tech
 
 ## Overview
 
-This project demonstrates a car rental booking engine with a robust architecture following Domain-Driven Design principles. The application features a monorepo structure with separate backend and frontend components that share common utilities and types.
+This project demonstrates a car rental booking engine with an architecture following Domain-Driven Design principles. The application features a monorepo structure with separate backend and frontend components.
 
 ## Features
 
-- User registration and authentication
+- User registration
 - Vehicle browsing by availability and date range
 - Booking creation and management
 - Dynamic seasonal pricing (peak, mid, off-season)
@@ -61,16 +61,19 @@ The application implements Clean Architecture with clear separation between:
 - Node.js 18+
 - npm
 
-### Running with Docker
+### Running Carental MVP
 
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/andre-amato/CarentalMVP.git
-cd carental
+cd CarentalMVP
+code .
 ```
 
 2. Start the backend:
+
+In the first terminal, run:
 
 ```bash
 docker-compose up
@@ -83,6 +86,8 @@ This will start:
 - API Documentation: http://localhost:8080/api-docs
 
 3. Start the frontend:
+
+In other terminal, run:
 
 ```bash
 npm i
@@ -114,20 +119,23 @@ These tests cover the application functionality from start to end and focus on t
 
 **IMPORTANT NOTE:**
 Before running Cypress tests, always restart Docker! The populated database can cause errors in testing.
-Restart with these commands:
+For restart, open a new terminal and run with these commands:
 
 ```bash
 docker-compose down
 docker-compose up
 ```
 
-Now, in a other terminal:
+Now, in a new terminal:
 
 ```bash
 npx cypress open
 ```
 
 Click on E2E testing, select one of the suggested Cypress Browsers (Google Chrome or Electron)
+
+In the Cypress UI, choose the US1 or US2 
+(remember that the test uses the database within Docker, so, if needed to redo the test, restart docker like the example above!)
 
 ##### US1.cy.js Test Flow:
 
@@ -281,3 +289,12 @@ The application includes pre-seeded data for testing:
 - Admin panel for fleet management
 - Enhanced test coverage
 - Error tracking and monitoring
+
+  ## Images of the application (Browser and mobile)
+  <img width="526" alt="image" src="https://github.com/user-attachments/assets/7376f576-5898-4bf5-bd51-bdc3943ca852" />
+<img width="1509" alt="image" src="https://github.com/user-attachments/assets/7ac07ed7-2238-40a9-97d4-ac9d171ac1a8" />
+<img width="1498" alt="image" src="https://github.com/user-attachments/assets/e90ba2c7-66c2-41cf-a2d0-899b2fe1f3ee" />
+<img width="368" alt="image" src="https://github.com/user-attachments/assets/682ea868-2c55-49b9-a0f1-9cf6c82b4d75" />
+<img width="375" alt="image" src="https://github.com/user-attachments/assets/42436814-9164-411d-b4aa-1d51bc4054cf" />
+
+
