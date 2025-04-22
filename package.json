@@ -9,6 +9,10 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
+    "dev": "lsof -ti:5173 | xargs kill -9 || true && cd packages/frontend && npm run dev",
+    "test:backend:unit": "cd packages/backend && jest --coverage",
+    "test:backend:integration": "cd packages/backend && jest tests/integration --verbose",
+    "test:backend:e2e": "cd packages/backend && jest tests/e2e",
     "start:backend": "npm run start --workspace=@carental/backend",
     "dev:backend": "npm run dev --workspace=@carental/backend",
     "test:backend": "npm run test --workspace=@carental/backend",

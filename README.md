@@ -1,8 +1,28 @@
+docker-compose up
+npm i
+npm run dev
+
+Front
 ✗ npm run test:frontend
+
+To run this tests, restart the backend with
+docker-compose down
+
+And then
+docker-compose up
+
+npx cypress open
+
+Backend
+
+npm run
+"test:backend:unit":
+"test:backend:integration":
+"test:backend:e2e":
 
 # Carental - Car Rental System MVP
 
-This project is an MVP (Minimum Viable Product) for a car rental system in Barcelona. It demonstrates a booking engine for car rentals with clean, maintainable architecture.
+This project is an MVP (Minimum Viable Product) for a car rental system. It demonstrates a booking engine for car rentals with clean, maintainable architecture.
 
 ## Project Structure
 
