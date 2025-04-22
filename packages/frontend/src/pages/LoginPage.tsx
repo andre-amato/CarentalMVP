@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
       <div className='max-w-md w-full p-8 bg-white shadow-xl rounded-xl'>
         <div className='flex justify-center mb-6'>
           <img
-            src='/public/logo.png'
+            src='/logo.png'
             alt='Logo'
             className='h-20 rounded-xl border border-gray-200 shadow-sm'
           />
@@ -244,7 +244,7 @@ const LoginPage: React.FC = () => {
                     className='block text-gray-700 text-sm font-medium mb-2'
                     htmlFor='newEmail'
                   >
-                    Email
+                    E-mail
                   </label>
                   <input
                     id='newEmail'

@@ -1,3 +1,5 @@
+✗ npm run test:frontend
+
 # Carental - Car Rental System MVP
 
 This project is an MVP (Minimum Viable Product) for a car rental system in Barcelona. It demonstrates a booking engine for car rentals with clean, maintainable architecture.
