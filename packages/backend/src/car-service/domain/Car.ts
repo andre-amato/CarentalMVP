@@ -1,6 +1,6 @@
+import { ObjectId } from 'mongodb';
 import { DateRange } from '../../shared/domain/DateRange';
 import { Season, SeasonDeterminer } from '../../shared/domain/Season';
-import { ObjectId } from 'mongodb'; // Add this import
 
 export interface CarProps {
   id?: string;

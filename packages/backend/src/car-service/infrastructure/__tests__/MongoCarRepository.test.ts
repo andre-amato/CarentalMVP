@@ -1,4 +1,3 @@
-// src/car-service/infrastructure/__tests__/MongoCarRepository.test.ts
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Collection, Db, ObjectId, WithId, Document } from 'mongodb';
 import { Car } from '../../domain/Car';

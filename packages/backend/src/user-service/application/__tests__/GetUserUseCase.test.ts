@@ -1,4 +1,3 @@
-// src/user-service/application/__tests__/GetUserUseCase.test.ts
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { UserRepository } from '../../domain/UserRepository';
 import { GetUserUseCase } from '../GetUserUseCase';
