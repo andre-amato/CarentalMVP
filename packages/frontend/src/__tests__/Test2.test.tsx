@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-// Import screen correctly
+
 import * as rtl from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
@@ -8,7 +8,6 @@ import LoginPage from '../pages/LoginPage';
 import { UserProvider } from '../contexts/UserContext';
 import React from 'react';
 
-// Destructure screen from rtl
 const { screen } = rtl;
 
 // Mock the API client

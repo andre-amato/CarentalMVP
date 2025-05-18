@@ -8,10 +8,10 @@ import { UserProvider } from '../contexts/UserContext';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-// Destructure screen from rtl
+
 const { screen } = rtl;
 
-// Create a new QueryClient for testing
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
